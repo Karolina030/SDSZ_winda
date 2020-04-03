@@ -1,1 +1,0 @@
-# Symulacja sterowania windą
