@@ -4,9 +4,18 @@ public class Main
 {
 	public static void main( String[] args )
 	{
-		Elevator[] elevators = new Elevator[] {new Elevator(0.63, 8)};
-		Simulation simulation = new Simulation( elevators );
+		double elevatorVelocity = 0.63;
+		int elevatorCapacity = 8;
+		int numOfFloors = 8;
+		int numOfPeople = 100;
+		int simulationTime = 60;
+		
+		Elevator[] elevators = new Elevator[] {new Elevator( elevatorVelocity, elevatorCapacity )};
+		Building building = new Building( elevators, numOfFloors, numOfPeople );
+		Simulation simulation = new Simulation( building, simulationTime );
+		
 		simulation.start();
+		
 		try
 		{
 			simulation.join();

@@ -15,7 +15,7 @@ public class Elevator
 	private int currentFloor = 0;
 	private double currentHeight = 0;
 	private int floorToGo = 0;
-	private LinkedList<Integer> outsideRequests;
+	private LinkedList<ElevatorRequest> outsideRequests;
 	private LinkedList<Integer> insideRequests;
 	private boolean isMoving = false;
 	
@@ -24,9 +24,8 @@ public class Elevator
 	{
 		this.velocity = velocity;
 		Capacity = capacity;
-		outsideRequests = new LinkedList<Integer>();
+		outsideRequests = new LinkedList<ElevatorRequest>();
 		insideRequests = new LinkedList<Integer>();
-		insideRequests.add(3);
 	}
 
 
@@ -49,6 +48,12 @@ public class Elevator
 	}
 	
 	
+	public void AddOutsideRequest( ElevatorRequest request )
+	{
+		outsideRequests.add( request );
+	}
+	
+	
 	// Je¿eli mamy ¿¹danie ze œrodka windy to tam jedziemy
 	// Je¿eli nie to jedziemy na najstarsze ¿¹danie z zewn¹trz
 	// W przeciwnym wypadku zwracamy -1 - brak wyboru
@@ -60,7 +65,7 @@ public class Elevator
 		}
 		else if ( !outsideRequests.isEmpty() )
 		{
-			return outsideRequests.removeFirst();
+			return outsideRequests.removeFirst().startFloor;
 		}
 		else
 		{
@@ -72,28 +77,51 @@ public class Elevator
 	private void Move( long elapsedTime )
 	{
 		System.out.println("Moving!");
+		
 		if ( floorToGo > currentFloor )
 		{
-			currentHeight += velocity * ((double)elapsedTime / 1000);
-			System.out.println(currentHeight);
-			if ( currentHeight >= floorToGo * floorHeight )
-			{
-				currentHeight = floorToGo * floorHeight;
-				currentFloor = floorToGo;
-				isMoving = false;
-				System.out.println("Achieved level!");
-			}	
+			MoveUp( elapsedTime );
 		}
 		else if ( floorToGo < currentFloor )
 		{
-			currentHeight -= velocity * ((double)elapsedTime / 1000);
-			
-			if ( currentHeight <= floorToGo * floorHeight )
-			{
-				currentHeight = floorToGo * floorHeight;
-				currentFloor = floorToGo;
-				isMoving = false;
-			}	
+			MoveDown( elapsedTime );
 		}
+		
+		System.out.println(currentHeight);
+	}
+	
+	
+	private void MoveUp( long elapsedTime )
+	{
+		currentHeight += velocity * ((double)elapsedTime / 1000);
+		
+		if ( currentHeight >= floorToGo * floorHeight )
+		{
+			FloorAchieved();
+		}	
+
+	}
+	
+	
+	private void MoveDown( long elapsedTime )
+	{
+		currentHeight -= velocity * ((double)elapsedTime / 1000);
+		
+		if ( currentHeight <= floorToGo * floorHeight )
+		{
+			FloorAchieved();
+		}	
+	}
+	
+	
+	private void FloorAchieved()
+	{
+		currentHeight = floorToGo * floorHeight;
+		currentFloor = floorToGo;
+		isMoving = false;
+		
+		// TODO: sprawdziæ kto wsiada a kto wysiada
+		
+		System.out.println("Floor achieved!");
 	}
 }
