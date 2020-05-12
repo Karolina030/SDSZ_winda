@@ -9,14 +9,16 @@ public class Elevator
 	
 	// max num of people
 	public int Capacity = 8;
-
+	private int peopleInside = 0;
+	
+	private Building building;
 	// in meters per second
 	private double velocity = 0.63;
 	private int currentFloor = 0;
 	private double currentHeight = 0;
 	private int floorToGo = 0;
 	private LinkedList<ElevatorRequest> outsideRequests;
-	private LinkedList<Integer> insideRequests;
+	private LinkedList<ElevatorRequest> insideRequests;
 	private boolean isMoving = false;
 	
 	
@@ -25,7 +27,13 @@ public class Elevator
 		this.velocity = velocity;
 		Capacity = capacity;
 		outsideRequests = new LinkedList<ElevatorRequest>();
-		insideRequests = new LinkedList<Integer>();
+		insideRequests = new LinkedList<ElevatorRequest>();
+	}
+	
+	
+	public void AddBuilding( Building building )
+	{
+		this.building = building;
 	}
 
 
@@ -38,6 +46,7 @@ public class Elevator
 			if ( floorToGo >= 0 )
 			{
 				isMoving = true;
+				System.out.println("Moving to " + floorToGo);
 			}
 		}
 		// Mamy wybrany poziom i mo¿emy jechaæ
@@ -51,6 +60,7 @@ public class Elevator
 	public void AddOutsideRequest( ElevatorRequest request )
 	{
 		outsideRequests.add( request );
+		System.out.println( "Outside request added!" );
 	}
 	
 	
@@ -61,11 +71,11 @@ public class Elevator
 	{
 		if ( !insideRequests.isEmpty() )
 		{
-			return insideRequests.removeFirst();
+			return insideRequests.getFirst().endFloor;
 		}
 		else if ( !outsideRequests.isEmpty() )
 		{
-			return outsideRequests.removeFirst().startFloor;
+			return outsideRequests.getFirst().startFloor;
 		}
 		else
 		{
@@ -75,9 +85,7 @@ public class Elevator
 	
 	
 	private void Move( long elapsedTime )
-	{
-		System.out.println("Moving!");
-		
+	{		
 		if ( floorToGo > currentFloor )
 		{
 			MoveUp( elapsedTime );
@@ -86,8 +94,12 @@ public class Elevator
 		{
 			MoveDown( elapsedTime );
 		}
+		else
+		{
+			FloorAchieved();
+		}
 		
-		System.out.println(currentHeight);
+		// System.out.println(currentHeight);
 	}
 	
 	
@@ -120,8 +132,35 @@ public class Elevator
 		currentFloor = floorToGo;
 		isMoving = false;
 		
-		// TODO: sprawdziæ kto wsiada a kto wysiada
+		// wysiadaj¹cy
+		for( int i = 0; i < insideRequests.size(); i++ )
+		{
+			ElevatorRequest request = insideRequests.get( i );
+			if ( request.endFloor == currentFloor )
+			{
+				request.EndRequest();
+				insideRequests.remove( i );
+				i--;
+				peopleInside--;
+			}
+		}
 		
-		System.out.println("Floor achieved!");
+		// wsiadaj¹cy
+		while( peopleInside < Capacity )
+		{
+			ElevatorRequest request = building.GetFloorRequest( currentFloor );
+			outsideRequests.remove( request );
+			
+			if ( request == null )
+			{
+				return;
+			}
+			
+			insideRequests.add( request );
+			peopleInside++;
+			System.out.println( "Added one person!" );
+		}
+		
+		System.out.println("Floor " + currentFloor + " achieved!");
 	}
 }

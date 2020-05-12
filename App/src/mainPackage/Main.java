@@ -7,12 +7,13 @@ public class Main
 		double elevatorVelocity = 0.63;
 		int elevatorCapacity = 8;
 		int numOfFloors = 8;
-		int numOfPeople = 100;
-		int simulationTime = 60;
+		int numOfPeople = 50;
+		int simulationTime = 600;
+		int simulationSpeed = 10;
 		
 		Elevator[] elevators = new Elevator[] {new Elevator( elevatorVelocity, elevatorCapacity )};
 		Building building = new Building( elevators, numOfFloors, numOfPeople );
-		Simulation simulation = new Simulation( building, simulationTime );
+		Simulation simulation = new Simulation( building, simulationTime, simulationSpeed );
 		
 		simulation.start();
 		

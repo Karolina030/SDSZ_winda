@@ -4,6 +4,7 @@ public class Simulation extends Thread
 {
 	private Building building;
 	private int simulationTime;
+	private int simulationSpeed;
 
 	private int updatesPerSecond = 5;
 	private int targetTime = 1000 / updatesPerSecond;
@@ -14,10 +15,11 @@ public class Simulation extends Thread
 	private long sleepTime;
 	
 	
-	public Simulation( Building building, long simulationTimeInSeconds )
+	public Simulation( Building building, long simulationTimeInSeconds, int simulationSpeed )
 	{
 		this.building = building;
-		this.simulationTime = (int) simulationTimeInSeconds * 1000;
+		this.simulationTime = (int) simulationTimeInSeconds * 1000 * simulationSpeed;
+		this.simulationSpeed = simulationSpeed;
 	}
 	
 	
@@ -34,7 +36,7 @@ public class Simulation extends Thread
 	        currentTime = System.currentTimeMillis();
 
 	        // get time elapsed since last update
-	        elapsedTime = currentTime - lastTime;
+	        elapsedTime = (currentTime - lastTime) * simulationSpeed;
 	        totalElapsedTime += elapsedTime;
 	        lastTime = currentTime;
 
