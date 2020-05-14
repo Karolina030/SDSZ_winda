@@ -1,18 +1,16 @@
 package mainPackage;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Random;
+import java.util.*;
 
 public class Building
 {
 	private Elevator[] elevators;
-	private int numOfFloors;
+	static int numOfFloors;
 	private int numOfPeople;
 	
 	private PriorityQueue<ElevatorRequest> elevatorRequests;
 	private ArrayList<LinkedList<ElevatorRequest>> floors;
+
 	
 	public Building( Elevator[] elevators, int numOfFloors, int numOfPeople )
 	{
@@ -34,9 +32,9 @@ public class Building
 			floors.add( new LinkedList<ElevatorRequest>() );
 		}
 	}
+
 	
-	
-	public void GeneratePeopleQueue( int simulationTime )
+	public void GeneratePeopleQueue( int simulationTime ) //przypisanie każdemu pasażerowi randomowych zapytań i czasu ich pojawienia się
 	{
 		Random rand = new Random();
 		
@@ -51,19 +49,19 @@ public class Building
 			
 			int appearTime = rand.nextInt( simulationTime );
 			
-			elevatorRequests.add( new ElevatorRequest( startFloor, endFloor, appearTime ) );
+			elevatorRequests.add( new ElevatorRequest(startFloor, endFloor, appearTime) ); //czy nie trzeba posortować według appearTime?
 		}
 	}
 	
 	
 	public void Simulate( long elapsedTime, long totalElapsedTime )
 	{
-		ElevatorRequest nextRequest = elevatorRequests.peek();
-		if ( nextRequest != null && nextRequest.appearTime <= totalElapsedTime )
+		ElevatorRequest nextRequest = elevatorRequests.peek(); //pobieramy pierwsze zapytanie
+		if ( nextRequest != null && nextRequest.appearTime <= totalElapsedTime ) //warunki żeby to było dobre zapytanie
 		{
-			nextRequest = elevatorRequests.poll();
-			elevators[ 0 ].AddOutsideRequest( nextRequest );
-			floors.get( nextRequest.startFloor ).add( nextRequest );
+			nextRequest = elevatorRequests.poll();   //pobranie z usunięciem jednego zapytania
+			elevators[ 0 ].AddOutsideRequest( nextRequest );  //dodanie tego zapytania do listy zapytań zewnętrznych w windzie
+			floors.get( nextRequest.startFloor ).add( nextRequest );  //dodanie tego zapytania do listy na odpowiednim piętrze
 		}
 		
 		for( Elevator elevator : elevators )
@@ -71,7 +69,6 @@ public class Building
 			elevator.Simulate( elapsedTime );
 		}
 	}
-	
 	
 	public ElevatorRequest GetFloorRequest( int floor )
 	{

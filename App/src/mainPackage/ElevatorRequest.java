@@ -22,6 +22,6 @@ public class ElevatorRequest implements Comparable<ElevatorRequest>
 	
 	public void EndRequest()
 	{
-		System.out.println( "Request done at " + endFloor );
+		System.out.println( "Inside request done at " + endFloor );
 	}
 }

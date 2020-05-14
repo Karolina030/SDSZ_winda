@@ -7,9 +7,9 @@ public class Main
 		double elevatorVelocity = 0.63;
 		int elevatorCapacity = 8;
 		int numOfFloors = 8;
-		int numOfPeople = 50;
-		int simulationTime = 600;
-		int simulationSpeed = 10;
+		int numOfPeople = 200;
+		int simulationTime = 100;
+		int simulationSpeed = 5;
 		
 		Elevator[] elevators = new Elevator[] {new Elevator( elevatorVelocity, elevatorCapacity )};
 		Building building = new Building( elevators, numOfFloors, numOfPeople );

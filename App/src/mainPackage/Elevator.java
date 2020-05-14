@@ -15,13 +15,15 @@ public class Elevator
 	// in meters per second
 	private double velocity = 0.63;
 	private int currentFloor = 0;
+	private String direction = "up";
 	private double currentHeight = 0;
 	private int floorToGo = 0;
 	private LinkedList<ElevatorRequest> outsideRequests;
 	private LinkedList<ElevatorRequest> insideRequests;
 	private boolean isMoving = false;
-	
-	
+
+
+
 	public Elevator( double velocity, int capacity )
 	{
 		this.velocity = velocity;
@@ -29,27 +31,31 @@ public class Elevator
 		outsideRequests = new LinkedList<ElevatorRequest>();
 		insideRequests = new LinkedList<ElevatorRequest>();
 	}
-	
-	
+
 	public void AddBuilding( Building building )
 	{
 		this.building = building;
 	}
 
 
+
 	public void Simulate( long elapsedTime )
 	{
-		// Je¿eli siê nie poruszamy to wybieramy poziom na który pojedziemy
+		// Jeï¿½eli siï¿½ nie poruszamy to wybieramy poziom na ktï¿½ry pojedziemy
 		if ( !isMoving )
 		{
+
+
 			floorToGo = ChooseLevelToGo();
 			if ( floorToGo >= 0 )
 			{
 				isMoving = true;
+				System.out.println("----------------------------------");
 				System.out.println("Moving to " + floorToGo);
 			}
+
 		}
-		// Mamy wybrany poziom i mo¿emy jechaæ
+		// Mamy wybrany poziom i moï¿½emy jechaï¿½
 		else
 		{
 			Move( elapsedTime );
@@ -60,12 +66,12 @@ public class Elevator
 	public void AddOutsideRequest( ElevatorRequest request )
 	{
 		outsideRequests.add( request );
-		System.out.println( "Outside request added!" );
+		System.out.println( "Outside request added at: "+ request.startFloor + " floor!");
 	}
 	
 	
-	// Je¿eli mamy ¿¹danie ze œrodka windy to tam jedziemy
-	// Je¿eli nie to jedziemy na najstarsze ¿¹danie z zewn¹trz
+	// Jeï¿½eli mamy ï¿½ï¿½danie ze ï¿½rodka windy to tam jedziemy
+	// Jeï¿½eli nie to jedziemy na najstarsze ï¿½ï¿½danie z zewnï¿½trz
 	// W przeciwnym wypadku zwracamy -1 - brak wyboru
 	private int ChooseLevelToGo()
 	{
@@ -75,25 +81,34 @@ public class Elevator
 		}
 		else if ( !outsideRequests.isEmpty() )
 		{
-			return outsideRequests.getFirst().startFloor;
+			return outsideRequests.getLast().startFloor;
 		}
 		else
 		{
 			return -1;
 		}
 	}
-	
+
+	public void adjustDirection() {
+
+		if (currentFloor == Building.numOfFloors-1) {
+			direction = "down";
+		}
+		else if (currentFloor == 0) {
+			direction = "up";
+		}
+	}
 	
 	private void Move( long elapsedTime )
-	{		
-		if ( floorToGo > currentFloor )
-		{
+	{
+		adjustDirection();
+		if (direction.equals("up")) {
 			MoveUp( elapsedTime );
 		}
-		else if ( floorToGo < currentFloor )
-		{
+		if (direction.equals("down")) {
 			MoveDown( elapsedTime );
 		}
+
 		else
 		{
 			FloorAchieved();
@@ -105,47 +120,49 @@ public class Elevator
 	
 	private void MoveUp( long elapsedTime )
 	{
-		currentHeight += velocity * ((double)elapsedTime / 1000);
-		
-		if ( currentHeight >= floorToGo * floorHeight )
-		{
+		currentFloor = (int) (currentHeight/floorHeight);
+		while (currentFloor < Building.numOfFloors-1) {
+			currentHeight += velocity * ((double)elapsedTime / 1000);
+			currentFloor = (int) (currentHeight/floorHeight);
 			FloorAchieved();
-		}	
-
+		}
 	}
 	
 	
 	private void MoveDown( long elapsedTime )
 	{
-		currentHeight -= velocity * ((double)elapsedTime / 1000);
-		
-		if ( currentHeight <= floorToGo * floorHeight )
-		{
+		currentFloor = (int) (currentHeight/floorHeight);
+		while (currentFloor > 0) {
+			currentHeight -= velocity * ((double)elapsedTime / 1000);
+			currentFloor = (int) (currentHeight/floorHeight);
 			FloorAchieved();
-		}	
+		}
 	}
 	
 	
 	private void FloorAchieved()
 	{
-		currentHeight = floorToGo * floorHeight;
-		currentFloor = floorToGo;
+		//currentHeight = floorToGo * floorHeight;
+		//currentFloor = floorToGo;
 		isMoving = false;
-		
-		// wysiadaj¹cy
+		// wysiadajï¿½cy
 		for( int i = 0; i < insideRequests.size(); i++ )
 		{
 			ElevatorRequest request = insideRequests.get( i );
 			if ( request.endFloor == currentFloor )
 			{
 				request.EndRequest();
-				insideRequests.remove( i );
+				insideRequests.remove(i);
 				i--;
 				peopleInside--;
+				System.out.println("Floor " + currentFloor+ " achieved!");
+				System.out.println( "Removed one person!" );
+				System.out.println("Number of people in the elevator " + peopleInside);
+
 			}
 		}
 		
-		// wsiadaj¹cy
+		// wsiadajï¿½cy
 		while( peopleInside < Capacity )
 		{
 			ElevatorRequest request = building.GetFloorRequest( currentFloor );
@@ -158,9 +175,10 @@ public class Elevator
 			
 			insideRequests.add( request );
 			peopleInside++;
+			System.out.println("Floor " + currentFloor + " achieved!");
 			System.out.println( "Added one person!" );
+			System.out.println("Number of people in the elevator " + peopleInside);
 		}
-		
-		System.out.println("Floor " + currentFloor + " achieved!");
+
 	}
 }
