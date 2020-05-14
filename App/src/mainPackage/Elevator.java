@@ -23,7 +23,6 @@ public class Elevator
 	private boolean isMoving = false;
 
 
-
 	public Elevator( double velocity, int capacity )
 	{
 		this.velocity = velocity;
@@ -37,14 +36,11 @@ public class Elevator
 		this.building = building;
 	}
 
-
-
 	public void Simulate( long elapsedTime )
 	{
 		// Je�eli si� nie poruszamy to wybieramy poziom na kt�ry pojedziemy
 		if ( !isMoving )
 		{
-
 
 			floorToGo = ChooseLevelToGo();
 			if ( floorToGo >= 0 )
@@ -89,8 +85,8 @@ public class Elevator
 		}
 	}
 
-	public void adjustDirection() {
-
+	public void adjustDirection()
+	{
 		if (currentFloor == Building.numOfFloors-1) {
 			direction = "down";
 		}

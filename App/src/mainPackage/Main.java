@@ -9,7 +9,7 @@ public class Main
 		int numOfFloors = 8;
 		int numOfPeople = 200;
 		int simulationTime = 100;
-		int simulationSpeed = 5;
+		int simulationSpeed = 10;
 		
 		Elevator[] elevators = new Elevator[] {new Elevator( elevatorVelocity, elevatorCapacity )};
 		Building building = new Building( elevators, numOfFloors, numOfPeople );

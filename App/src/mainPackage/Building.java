@@ -10,7 +10,6 @@ public class Building
 	
 	private PriorityQueue<ElevatorRequest> elevatorRequests;
 	private ArrayList<LinkedList<ElevatorRequest>> floors;
-
 	
 	public Building( Elevator[] elevators, int numOfFloors, int numOfPeople )
 	{
@@ -52,8 +51,7 @@ public class Building
 			elevatorRequests.add( new ElevatorRequest(startFloor, endFloor, appearTime) ); //czy nie trzeba posortować według appearTime?
 		}
 	}
-	
-	
+
 	public void Simulate( long elapsedTime, long totalElapsedTime )
 	{
 		ElevatorRequest nextRequest = elevatorRequests.peek(); //pobieramy pierwsze zapytanie

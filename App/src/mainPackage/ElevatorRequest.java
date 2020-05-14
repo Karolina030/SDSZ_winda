@@ -18,8 +18,7 @@ public class ElevatorRequest implements Comparable<ElevatorRequest>
 	{
 		return (int) (this.appearTime - other.appearTime);
 	}
-	
-	
+
 	public void EndRequest()
 	{
 		System.out.println( "Inside request done at " + endFloor );
