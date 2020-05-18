@@ -48,7 +48,7 @@ public class Building
 			
 			int appearTime = rand.nextInt( simulationTime );
 			
-			elevatorRequests.add( new ElevatorRequest(startFloor, endFloor, appearTime) ); //czy nie trzeba posortowaÄ‡ wedÅ‚ug appearTime?
+			elevatorRequests.add( new ElevatorRequest(startFloor, endFloor, appearTime) ); // sortuje siê automatycznie za pomoc¹ CompareTo w ElevatorRequest.clas
 		}
 	}
 

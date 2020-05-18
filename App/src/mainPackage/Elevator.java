@@ -101,10 +101,9 @@ public class Elevator
 		if (direction.equals("up")) {
 			MoveUp( elapsedTime );
 		}
-		if (direction.equals("down")) {
+		else if (direction.equals("down")) {
 			MoveDown( elapsedTime );
 		}
-
 		else
 		{
 			FloorAchieved();
