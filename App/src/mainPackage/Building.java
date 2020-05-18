@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Building
 {
-	private Elevator[] elevators;
+	public Elevator elevator;
 	static int numOfFloors;
 	private int numOfPeople;
 	private int numOfResults = 0;
@@ -14,14 +14,14 @@ public class Building
 	private PriorityQueue<ElevatorRequest> elevatorRequests;
 	private ArrayList<LinkedList<ElevatorRequest>> floors;
 	
-	public Building( Elevator[] elevators, int numOfFloors, int numOfPeople )
+	public Building( Elevator elevator, int numOfFloors, int numOfPeople )
 	{
-		this.elevators = elevators;
+		this.elevator = elevator;
 		
-		for( Elevator elevator : elevators )
-		{
+		//for( Elevator elevator : elevators )
+		//{
 			elevator.AddBuilding( this );
-		}
+		//}
 		
 		this.numOfFloors = numOfFloors;
 		this.numOfPeople = numOfPeople;
@@ -62,14 +62,14 @@ public class Building
 		if ( nextRequest != null && nextRequest.appearTime <= totalElapsedTime ) //warunki żeby to było dobre zapytanie
 		{
 			nextRequest = elevatorRequests.poll();   //pobranie z usunięciem jednego zapytania
-			elevators[ 0 ].AddOutsideRequest( nextRequest );  //dodanie tego zapytania do listy zapytań zewnętrznych w windzie
-			floors.get( nextRequest.startFloor ).add( nextRequest );  //dodanie tego zapytania do listy na odpowiednim piętrze
+			elevator.AddOutsideRequest( nextRequest );  //dodanie tego zapytania do listy zapytań zewnętrznych w windzie
+			floors.get( nextRequest.getStartFloor() ).add( nextRequest );  //dodanie tego zapytania do listy na odpowiednim piętrze
 		}
 		
-		for( Elevator elevator : elevators )
-		{
+		//for( Elevator elevator : elevators )
+		//{
 			elevator.Simulate( elapsedTime );
-		}
+		//}
 	}
 	
 	public ElevatorRequest GetFloorRequest( int floor )

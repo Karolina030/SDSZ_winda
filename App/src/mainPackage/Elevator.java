@@ -2,6 +2,9 @@ package mainPackage;
 
 import java.util.*;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 public class Elevator
 {
 	// height between levels in meters
@@ -18,8 +21,8 @@ public class Elevator
 	private Direction direction = Direction.none;
 	private double currentHeight = 0;
 	private int floorToGo = 0;
-	private LinkedList<ElevatorRequest> outsideRequests;
-	private LinkedList<ElevatorRequest> insideRequests;
+	public ObservableList<ElevatorRequest> outsideRequests;
+	public ObservableList<ElevatorRequest> insideRequests;
 	private boolean isMoving = false;
 
 
@@ -27,8 +30,8 @@ public class Elevator
 	{
 		this.velocity = velocity;
 		Capacity = capacity;
-		outsideRequests = new LinkedList<ElevatorRequest>();
-		insideRequests = new LinkedList<ElevatorRequest>();
+		outsideRequests = FXCollections.observableArrayList();
+		insideRequests = FXCollections.observableArrayList();
 	}
 
 	
@@ -63,7 +66,7 @@ public class Elevator
 	public void AddOutsideRequest( ElevatorRequest request )
 	{
 		outsideRequests.add( request );
-		System.out.println( "Outside request added at: "+ request.startFloor + " floor!");
+		System.out.println( "Outside request added at: "+ request.getStartFloor() + " floor!");
 	}
 	
 
@@ -88,15 +91,15 @@ public class Elevator
 		else if ( !outsideRequests.isEmpty() )
 		{
 			// sprawdzamy czy najstarsze zadanie jest nizej
-			if ( outsideRequests.getFirst().startFloor < currentFloor )
+			if ( outsideRequests.get( 0 ).getStartFloor() < currentFloor )
 			{
 				// zwracamy najblizsze zadanie w dol
-				return GetClosestOutsideRequestDown().startFloor;
+				return GetClosestOutsideRequestDown().getStartFloor();
 			}
 			else
 			{
 				// zwracamy najblizsze zadanie w gore
-				return GetClosestOutsideRequestUp().startFloor;
+				return GetClosestOutsideRequestUp().getStartFloor();
 			}
 		}
 		else
@@ -180,7 +183,7 @@ public class Elevator
 		for( int i = 0; i < insideRequests.size(); i++ )
 		{
 			ElevatorRequest request = insideRequests.get( i );
-			if ( request.endFloor == currentFloor )
+			if ( request.getEndFloor() == currentFloor )
 			{
 				insideRequests.remove(i);
 				i--;
@@ -222,20 +225,20 @@ public class Elevator
 		
 		if ( inside == null )
 		{
-			return outside.startFloor;
+			return outside.getStartFloor();
 		}
 		else if ( outside == null )
 		{
-			return inside.endFloor;
+			return inside.getEndFloor();
 		}
 		
-		if ( outside.startFloor < inside.endFloor )
+		if ( outside.getStartFloor() < inside.getEndFloor() )
 		{
-			return outside.startFloor;
+			return outside.getStartFloor();
 		}
 		else
 		{
-			return inside.endFloor;
+			return inside.getEndFloor();
 		}
 	}
 	
@@ -252,20 +255,20 @@ public class Elevator
 		
 		if ( inside == null )
 		{
-			return outside.startFloor;
+			return outside.getStartFloor();
 		}
 		else if ( outside == null )
 		{
-			return inside.endFloor;
+			return inside.getEndFloor();
 		}
 		
-		if ( outside.startFloor > inside.endFloor )
+		if ( outside.getStartFloor() > inside.getEndFloor() )
 		{
-			return outside.startFloor;
+			return outside.getStartFloor();
 		}
 		else
 		{
-			return inside.endFloor;
+			return inside.getEndFloor();
 		}
 	}
 	
@@ -277,9 +280,9 @@ public class Elevator
 		for( int i = 0; i < insideRequests.size(); i++ )
 		{
 			ElevatorRequest request = insideRequests.get( i );
-			if ( request.endFloor > currentFloor )
+			if ( request.getEndFloor() >= currentFloor )
 			{
-				if ( result == null || request.endFloor < result.endFloor )
+				if ( result == null || request.getEndFloor() < result.getEndFloor() )
 				{
 					result = request;
 				}
@@ -297,9 +300,9 @@ public class Elevator
 		for( int i = 0; i < insideRequests.size(); i++ )
 		{
 			ElevatorRequest request = insideRequests.get( i );
-			if ( request.endFloor < currentFloor )
+			if ( request.getEndFloor() <= currentFloor )
 			{
-				if ( result == null || request.endFloor > result.endFloor )
+				if ( result == null || request.getEndFloor() > result.getEndFloor() )
 				{
 					result = request;
 				}
@@ -317,9 +320,9 @@ public class Elevator
 		for( int i = 0; i < outsideRequests.size(); i++ )
 		{
 			ElevatorRequest request = outsideRequests.get( i );
-			if ( request.startFloor > currentFloor )
+			if ( request.getStartFloor() >= currentFloor )
 			{
-				if ( result == null || request.startFloor < result.startFloor )
+				if ( result == null || request.getStartFloor() < result.getStartFloor() )
 				{
 					result = request;
 				}
@@ -337,9 +340,9 @@ public class Elevator
 		for( int i = 0; i < outsideRequests.size(); i++ )
 		{
 			ElevatorRequest request = outsideRequests.get( i );
-			if ( request.startFloor < currentFloor )
+			if ( request.getStartFloor() <= currentFloor )
 			{
-				if ( result == null || request.startFloor > result.startFloor )
+				if ( result == null || request.getStartFloor() > result.getStartFloor() )
 				{
 					result = request;
 				}
