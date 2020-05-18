@@ -182,7 +182,6 @@ public class Elevator
 			ElevatorRequest request = insideRequests.get( i );
 			if ( request.endFloor == currentFloor )
 			{
-				request.EndRequest();
 				insideRequests.remove(i);
 				i--;
 				peopleInside--;
@@ -197,9 +196,10 @@ public class Elevator
 			
 			if ( request == null )
 			{
-				return;
+				break;
 			}
 			
+			building.AddResult( request );
 			outsideRequests.remove( request );
 			insideRequests.add( request );
 			peopleInside++;

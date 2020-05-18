@@ -63,7 +63,8 @@ public class Simulation extends Thread
 	        }
 	    }
 	    
-		System.out.println("Simulation ended!");
+	    System.out.println("Simulation ended!");
+		System.out.println("Average waiting time: " + building.GetResults());
 	}
 	
 	

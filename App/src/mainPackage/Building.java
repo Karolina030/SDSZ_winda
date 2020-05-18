@@ -7,6 +7,9 @@ public class Building
 	private Elevator[] elevators;
 	static int numOfFloors;
 	private int numOfPeople;
+	private int numOfResults = 0;
+	private long totalWaitingTime = 0;
+	private long totalElapsedTime;
 	
 	private PriorityQueue<ElevatorRequest> elevatorRequests;
 	private ArrayList<LinkedList<ElevatorRequest>> floors;
@@ -54,6 +57,7 @@ public class Building
 
 	public void Simulate( long elapsedTime, long totalElapsedTime )
 	{
+		this.totalElapsedTime = totalElapsedTime;
 		ElevatorRequest nextRequest = elevatorRequests.peek(); //pobieramy pierwsze zapytanie
 		if ( nextRequest != null && nextRequest.appearTime <= totalElapsedTime ) //warunki żeby to było dobre zapytanie
 		{
@@ -71,5 +75,17 @@ public class Building
 	public ElevatorRequest GetFloorRequest( int floor )
 	{
 		return floors.get( floor ).poll();
+	}
+	
+	public void AddResult( ElevatorRequest request )
+	{
+		numOfResults++;
+		totalWaitingTime += totalElapsedTime - request.appearTime;
+	}
+	
+	public double GetResults()
+	{
+		double result = totalWaitingTime / numOfResults / 1000;
+		return result;
 	}
 }
