@@ -8,7 +8,7 @@ public class Main
 		double elevatorVelocity = 0.63;
 		int elevatorCapacity = 8;
 		int numOfFloors = 8;
-		int numOfPeople = 200;
+		int numOfPeople = 20;
 		int simulationTime = 100;
 		int simulationSpeed = 1;
 		
