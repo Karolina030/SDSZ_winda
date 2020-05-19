@@ -10,36 +10,55 @@ public class Building
 	private int numOfResults = 0;
 	private long totalWaitingTime = 0;
 	private long totalElapsedTime;
-	
-	private PriorityQueue<ElevatorRequest> elevatorRequests;
-	private ArrayList<LinkedList<ElevatorRequest>> floors;
-	
+	public long start;
+
+	public PriorityQueue<ElevatorRequest> elevatorRequests;
+	private ArrayList<Floor> floors;
+
 	public Building( Elevator elevator, int numOfFloors, int numOfPeople )
 	{
 		this.elevator = elevator;
-		
-		//for( Elevator elevator : elevators )
-		//{
-			elevator.AddBuilding( this );
-		//}
-		
+
+		elevator.AddBuilding( this );
+
 		this.numOfFloors = numOfFloors;
 		this.numOfPeople = numOfPeople;
-		
+		start = System.currentTimeMillis();
+
 		elevatorRequests = new PriorityQueue<ElevatorRequest>();
-		
-		floors = new ArrayList<LinkedList<ElevatorRequest>>( numOfFloors );
+
+		floors = new ArrayList<Floor>( numOfFloors );
 		for( int i = 0; i < numOfFloors; i++ )
 		{
-			floors.add( new LinkedList<ElevatorRequest>() );
+			floors.add( new Floor(i) );
 		}
 	}
 
-	
-	public void GeneratePeopleQueue( int simulationTime ) //przypisanie każdemu pasażerowi randomowych zapytań i czasu ich pojawienia się
+	public void GenerateEvent( int simulationTime, int people)
 	{
 		Random rand = new Random();
-		
+
+		int startFloor = rand.nextInt( Building.numOfFloors );
+		int time = rand.nextInt(simulationTime);// start
+		for( int i = 0; i < people; i++ ) {
+			int endFloor;
+			do
+			{
+				endFloor = rand.nextInt( Building.numOfFloors );
+			} while ( endFloor == startFloor );
+			int appearTime = rand.nextInt( 20000) + time;
+
+			elevatorRequests.add( new ElevatorRequest(startFloor, endFloor, appearTime) );
+			floors.get(startFloor).addRequest(new ElevatorRequest(startFloor, endFloor, appearTime) );
+
+		}
+
+	}
+
+	public void GeneratePeopleQueue( int simulationTime ) //przypisanie kaÅ¼demu pasaÅ¼erowi randomowych zapytaÅ„ i czasu ich pojawienia siÄ™
+	{
+		Random rand = new Random();
+
 		for( int i = 0; i < numOfPeople; i++ )
 		{
 			int startFloor = rand.nextInt( numOfFloors );
@@ -48,41 +67,43 @@ public class Building
 			{
 				endFloor = rand.nextInt( numOfFloors );
 			} while ( endFloor == startFloor );
-			
+
 			int appearTime = rand.nextInt( simulationTime );
-			
-			elevatorRequests.add( new ElevatorRequest(startFloor, endFloor, appearTime) ); // sortuje si� automatycznie za pomoc� CompareTo w ElevatorRequest.clas
+
+			elevatorRequests.add( new ElevatorRequest(startFloor, endFloor, appearTime) ); // sortuje siê automatycznie za pomoc¹ CompareTo w ElevatorRequest.clas
+			floors.get(startFloor).addRequest(new ElevatorRequest(startFloor, endFloor, appearTime) );
 		}
+		GenerateEvent(simulationTime,30);
 	}
 
 	public void Simulate( long elapsedTime, long totalElapsedTime )
 	{
 		this.totalElapsedTime = totalElapsedTime;
 		ElevatorRequest nextRequest = elevatorRequests.peek(); //pobieramy pierwsze zapytanie
-		if ( nextRequest != null && nextRequest.appearTime <= totalElapsedTime ) //warunki żeby to było dobre zapytanie
+		if ( nextRequest != null && nextRequest.appearTime <= totalElapsedTime ) //warunki Å¼eby to byÅ‚o dobre zapytanie
 		{
-			nextRequest = elevatorRequests.poll();   //pobranie z usunięciem jednego zapytania
-			elevator.AddOutsideRequest( nextRequest );  //dodanie tego zapytania do listy zapytań zewnętrznych w windzie
-			floors.get( nextRequest.getStartFloor() ).add( nextRequest );  //dodanie tego zapytania do listy na odpowiednim piętrze
+			nextRequest = elevatorRequests.poll();   //pobranie z usuniÄ™ciem jednego zapytania
+			elevator.AddOutsideRequest( nextRequest );  //dodanie tego zapytania do listy zapytaÅ„ zewnÄ™trznych w windzie
+			//        floors.get( nextRequest.getStartFloor() ).add( nextRequest );  //dodanie tego zapytania do listy na odpowiednim piÄ™trze
 		}
-		
+
 		//for( Elevator elevator : elevators )
 		//{
-			elevator.Simulate( elapsedTime );
+		elevator.Simulate( elapsedTime );
 		//}
 	}
-	
+
 	public ElevatorRequest GetFloorRequest( int floor )
 	{
-		return floors.get( floor ).poll();
+		return floors.get( floor ).getFloorRequests().poll();
 	}
-	
+
 	public void AddResult( ElevatorRequest request )
 	{
 		numOfResults++;
 		totalWaitingTime += totalElapsedTime - request.appearTime;
 	}
-	
+
 	public double GetResults()
 	{
 		double result = totalWaitingTime / numOfResults / 1000;
