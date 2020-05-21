@@ -1,7 +1,5 @@
 package mainPackage;
 
-import java.util.*;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -12,18 +10,16 @@ public class Elevator
 	
 	// max num of people
 	public int Capacity = 8;
-	public int peopleInside = 0;
+	public int PeopleInside = 0;
+	public ObservableList<ElevatorRequest> OutsideRequests;
+	public ObservableList<ElevatorRequest> InsideRequests;
 	
 	private Building building;
-	// in meters per second
-	private double velocity = 0.63;
+	private double velocity = 0.63; // in meters per second
 	private int currentFloor = 0;
 	private Direction direction = Direction.none;
 	private double currentHeight = 0;
 	private int floorToGo = 0;
-	public ObservableList<ElevatorRequest> outsideRequests;
-	public ObservableList<ElevatorRequest> insideRequests;
-	public ObservableList<ElevatorRequest> current;
 	private boolean isMoving = false;
 
 
@@ -31,8 +27,8 @@ public class Elevator
 	{
 		this.velocity = velocity;
 		Capacity = capacity;
-		outsideRequests = FXCollections.observableArrayList();
-		insideRequests = FXCollections.observableArrayList();
+		OutsideRequests = FXCollections.observableArrayList();
+		InsideRequests = FXCollections.observableArrayList();
 	}
 
 
@@ -66,15 +62,14 @@ public class Elevator
 	
 	public void AddOutsideRequest( ElevatorRequest request )
 	{
-		outsideRequests.add( request );
-		System.out.println( "Outside request added at: "+ request.getStartFloor() + " floor!");
+		OutsideRequests.add( request );
 	}
 	
 
 	private int ChooseLevelToGo()
 	{
 		// jezeli ktos jest w srodku windy
-		if ( !insideRequests.isEmpty() )
+		if ( !InsideRequests.isEmpty() )
 		{
 			// jezeli winda jechala w gore to staramy sie jechac w gore
 			// "staramy sie" bo moze sie okazac, ze wyzej juz nikogo nie ma
@@ -89,10 +84,10 @@ public class Elevator
 				return GetClosestRequestDown();
 			}
 		}
-		else if ( !outsideRequests.isEmpty() )
+		else if ( !OutsideRequests.isEmpty() )
 		{
 			// sprawdzamy czy najstarsze zadanie jest nizej
-			if ( outsideRequests.get( 0 ).getStartFloor() < currentFloor )
+			if ( OutsideRequests.get( 0 ).getStartFloor() < currentFloor )
 			{
 				// zwracamy najblizsze zadanie w dol
 				return GetClosestOutsideRequestDown().getStartFloor();
@@ -128,9 +123,7 @@ public class Elevator
 	
 	
 	private void Move( long elapsedTime )
-	{
-		currentFloor = (int) ( currentHeight / floorHeight );
-		
+	{		
 		if ( direction == Direction.up )
 		{
 			MoveUp( elapsedTime );
@@ -144,12 +137,13 @@ public class Elevator
 			FloorAchieved();
 		}
 		
-		// System.out.println(currentHeight);
+		//System.out.println(currentHeight);
 	}
 	
 	
 	private void MoveUp( long elapsedTime )
 	{
+		currentFloor = (int) Math.floor( currentHeight / floorHeight );
 
 		if ( currentFloor < floorToGo )
 		{
@@ -164,6 +158,7 @@ public class Elevator
 	
 	private void MoveDown( long elapsedTime )
 	{
+		currentFloor = (int) Math.ceil( currentHeight / floorHeight );
 
 		if ( currentFloor > floorToGo )
 		{
@@ -183,20 +178,20 @@ public class Elevator
 		System.out.println("Floor " + currentFloor + " achieved!");
 		
 		// wysiadajacy
-		for( int i = 0; i < insideRequests.size(); i++ )
+		for( int i = 0; i < InsideRequests.size(); i++ )
 		{
-			ElevatorRequest request = insideRequests.get( i );
+			ElevatorRequest request = InsideRequests.get( i );
 			if ( request.getEndFloor() == currentFloor )
 			{
-				insideRequests.remove(i);
+				InsideRequests.remove(i);
 				i--;
-				peopleInside--;
+				PeopleInside--;
 				System.out.println( "Removed one person!" );
 			}
 		}
 		
 		// wsiadajacy
-		while( peopleInside < Capacity )
+		while( PeopleInside < Capacity )
 		{
 			ElevatorRequest request = building.GetFloorRequest( currentFloor );
 			
@@ -206,13 +201,13 @@ public class Elevator
 			}
 			
 			building.AddResult( request );
-			outsideRequests.remove( request );
-			insideRequests.add( request );
-			peopleInside++;
+			OutsideRequests.remove( request );
+			InsideRequests.add( request );
+			PeopleInside++;
 			System.out.println( "Added one person!" );
 		}
 		
-		System.out.println("Number of people in the elevator " + peopleInside);
+		System.out.println("Number of people in the elevator " + PeopleInside);
 	}
 
 	
@@ -280,9 +275,9 @@ public class Elevator
 	{
 		ElevatorRequest result = null;
 		
-		for( int i = 0; i < insideRequests.size(); i++ )
+		for( int i = 0; i < InsideRequests.size(); i++ )
 		{
-			ElevatorRequest request = insideRequests.get( i );
+			ElevatorRequest request = InsideRequests.get( i );
 			if ( request.getEndFloor() >= currentFloor )
 			{
 				if ( result == null || request.getEndFloor() < result.getEndFloor() )
@@ -300,9 +295,9 @@ public class Elevator
 	{
 		ElevatorRequest result = null;
 		
-		for( int i = 0; i < insideRequests.size(); i++ )
+		for( int i = 0; i < InsideRequests.size(); i++ )
 		{
-			ElevatorRequest request = insideRequests.get( i );
+			ElevatorRequest request = InsideRequests.get( i );
 			if ( request.getEndFloor() <= currentFloor )
 			{
 				if ( result == null || request.getEndFloor() > result.getEndFloor() )
@@ -320,9 +315,9 @@ public class Elevator
 	{
 		ElevatorRequest result = null;
 		
-		for( int i = 0; i < outsideRequests.size(); i++ )
+		for( int i = 0; i < OutsideRequests.size(); i++ )
 		{
-			ElevatorRequest request = outsideRequests.get( i );
+			ElevatorRequest request = OutsideRequests.get( i );
 			if ( request.getStartFloor() >= currentFloor )
 			{
 				if ( result == null || request.getStartFloor() < result.getStartFloor() )
@@ -340,9 +335,9 @@ public class Elevator
 	{
 		ElevatorRequest result = null;
 		
-		for( int i = 0; i < outsideRequests.size(); i++ )
+		for( int i = 0; i < OutsideRequests.size(); i++ )
 		{
-			ElevatorRequest request = outsideRequests.get( i );
+			ElevatorRequest request = OutsideRequests.get( i );
 			if ( request.getStartFloor() <= currentFloor )
 			{
 				if ( result == null || request.getStartFloor() > result.getStartFloor() )

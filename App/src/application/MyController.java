@@ -45,7 +45,7 @@ public class MyController
 		simulation.start();
 		//simulation.stop();
 		
-		insideRequestsTable.setItems( elevator.insideRequests );
-		outsideRequestsTable.setItems( building.elevator.outsideRequests );
+		insideRequestsTable.setItems( elevator.InsideRequests );
+		outsideRequestsTable.setItems( building.elevator.OutsideRequests );
 	}
 }
