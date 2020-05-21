@@ -23,7 +23,7 @@ public class Main extends Application {
 			MyController controller = loader.getController();
 			controller.SetStage( primaryStage );
 			
-			Scene scene = new Scene( root, 800, 800 );
+			Scene scene = new Scene( root, 850, 850 );
 			
 			primaryStage.setScene( scene );
 			primaryStage.setTitle( "Elevator simulation" );

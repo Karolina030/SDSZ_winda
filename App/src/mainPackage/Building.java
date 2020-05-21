@@ -2,6 +2,8 @@ package mainPackage;
 
 import java.util.*;
 
+import javafx.scene.control.RadioButton;
+
 public class Building
 {
 	public Elevator elevator;
@@ -15,7 +17,7 @@ public class Building
 	public PriorityQueue<ElevatorRequest> elevatorRequests;
 	private ArrayList<Floor> floors;
 
-	public Building( Elevator elevator, int numOfFloors, int numOfPeople )
+	public Building( Elevator elevator, int numOfFloors, int numOfPeople, ArrayList<RadioButton> buttons )
 	{
 		this.elevator = elevator;
 
@@ -30,7 +32,7 @@ public class Building
 		floors = new ArrayList<Floor>( numOfFloors );
 		for( int i = 0; i < numOfFloors; i++ )
 		{
-			floors.add( new Floor(i) );
+			floors.add( new Floor( i, buttons.get( numOfFloors - i - 1 ) ) );
 		}
 	}
 
@@ -54,7 +56,8 @@ public class Building
 
 	}
 
-	public void GeneratePeopleQueue( int simulationTime ) //przypisanie kaÅ¼demu pasaÅ¼erowi randomowych zapytaÅ„ i czasu ich pojawienia siÄ™
+	// przypisuje kazdemu pasazerowi losowe zadanie i czas pojawienia
+	public void GeneratePeopleQueue( int simulationTime )
 	{
 		Random rand = new Random();
 
@@ -62,6 +65,7 @@ public class Building
 		{
 			int startFloor = rand.nextInt( numOfFloors );
 			int endFloor;
+			
 			do
 			{
 				endFloor = rand.nextInt( numOfFloors );
@@ -69,7 +73,8 @@ public class Building
 
 			int appearTime = rand.nextInt( simulationTime );
 
-			elevatorRequests.add( new ElevatorRequest(startFloor, endFloor, appearTime) ); // sortuje siê automatycznie za pomoc¹ CompareTo w ElevatorRequest.clas
+			// sortuje sie automatycznie za pomoca CompareTo
+			elevatorRequests.add( new ElevatorRequest(startFloor, endFloor, appearTime) );
 		}
 		GenerateEvent(simulationTime,10);
 	}
@@ -77,12 +82,19 @@ public class Building
 	public void Simulate( long elapsedTime, long totalElapsedTime )
 	{
 		this.totalElapsedTime = totalElapsedTime;
-		ElevatorRequest nextRequest = elevatorRequests.peek(); //pobieramy pierwsze zapytanie
-		if ( nextRequest != null && nextRequest.appearTime <= totalElapsedTime && (totalElapsedTime-nextRequest.appearTime)<=20*1000) //warunki Å¼eby to byÅ‚o dobre zapytanie
+		
+		// podgladamy pierwsze zapytanie
+		ElevatorRequest nextRequest = elevatorRequests.peek();
+		if ( nextRequest != null
+				&& nextRequest.appearTime <= totalElapsedTime
+				&& ( totalElapsedTime - nextRequest.appearTime ) <= 20 * 1000 )
 		{
-			nextRequest = elevatorRequests.poll();   //pobranie z usuniÄ™ciem jednego zapytania
-			elevator.AddOutsideRequest( nextRequest );  //dodanie tego zapytania do listy zapytaÅ„ zewnÄ™trznych w windzie
-			floors.get( nextRequest.getStartFloor() ).addRequest(nextRequest); //dodanie tego zapytania do listy na odpowiednim piÄ™trze
+			// pobieramy zadanie (i usuwamy)
+			nextRequest = elevatorRequests.poll();
+			// dodajemy to zadanie do zadan zewnetrznych windy
+			elevator.AddOutsideRequest( nextRequest );
+			//dodajemy to zadanie do listy na odpowiednim pietrze
+			floors.get( nextRequest.getStartFloor() ).addRequest( nextRequest );
 		}
 		//for( Elevator elevator : elevators )
 		//{
@@ -92,7 +104,7 @@ public class Building
 
 	public ElevatorRequest GetFloorRequest( int floor )
 	{
-		return floors.get( floor ).getFloorRequests().poll();
+		return floors.get( floor ).getFloorRequest();
 	}
 
 	public void AddResult( ElevatorRequest request )
