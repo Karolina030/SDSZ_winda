@@ -12,7 +12,7 @@ public class Elevator
 	
 	// max num of people
 	public int Capacity = 8;
-	private int peopleInside = 0;
+	public int peopleInside = 0;
 	
 	private Building building;
 	// in meters per second
@@ -23,6 +23,7 @@ public class Elevator
 	private int floorToGo = 0;
 	public ObservableList<ElevatorRequest> outsideRequests;
 	public ObservableList<ElevatorRequest> insideRequests;
+	public ObservableList<ElevatorRequest> current;
 	private boolean isMoving = false;
 
 
@@ -34,7 +35,7 @@ public class Elevator
 		insideRequests = FXCollections.observableArrayList();
 	}
 
-	
+
 	public void AddBuilding( Building building )
 	{
 		this.building = building;
@@ -111,11 +112,11 @@ public class Elevator
 
 	private void AdjustDirection()
 	{
-		if ( floorToGo < currentFloor )
+		if ( floorToGo < currentFloor || currentFloor==7)
 		{
 			direction = Direction.down;
 		}
-		else if ( floorToGo > currentFloor )
+		else if ( floorToGo > currentFloor || currentFloor==0)
 		{
 			direction = Direction.up;
 		}
@@ -149,6 +150,7 @@ public class Elevator
 	
 	private void MoveUp( long elapsedTime )
 	{
+
 		if ( currentFloor < floorToGo )
 		{
 			currentHeight += velocity * ((double)elapsedTime / 1000);
@@ -162,6 +164,7 @@ public class Elevator
 	
 	private void MoveDown( long elapsedTime )
 	{
+
 		if ( currentFloor > floorToGo )
 		{
 			currentHeight -= velocity * ((double)elapsedTime / 1000);

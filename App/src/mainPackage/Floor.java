@@ -1,18 +1,19 @@
 package mainPackage;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Random;
 
 public class Floor {
 
-    PriorityQueue<ElevatorRequest> floorRequests;
+    LinkedList<ElevatorRequest> floorRequests;
     private int ID;
 
     Floor(int number) {
-        floorRequests = new PriorityQueue<>();
+        floorRequests = new LinkedList<>();
         ID = number;
     }
 
-    public PriorityQueue<ElevatorRequest> getFloorRequests() {
+    public LinkedList<ElevatorRequest> getFloorRequests() {
         return floorRequests;
     }
 

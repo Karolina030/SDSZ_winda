@@ -49,7 +49,6 @@ public class Building
 			int appearTime = rand.nextInt( 20000) + time;
 
 			elevatorRequests.add( new ElevatorRequest(startFloor, endFloor, appearTime) );
-			floors.get(startFloor).addRequest(new ElevatorRequest(startFloor, endFloor, appearTime) );
 
 		}
 
@@ -71,22 +70,20 @@ public class Building
 			int appearTime = rand.nextInt( simulationTime );
 
 			elevatorRequests.add( new ElevatorRequest(startFloor, endFloor, appearTime) ); // sortuje siê automatycznie za pomoc¹ CompareTo w ElevatorRequest.clas
-			floors.get(startFloor).addRequest(new ElevatorRequest(startFloor, endFloor, appearTime) );
 		}
-		GenerateEvent(simulationTime,30);
+		GenerateEvent(simulationTime,10);
 	}
 
 	public void Simulate( long elapsedTime, long totalElapsedTime )
 	{
 		this.totalElapsedTime = totalElapsedTime;
 		ElevatorRequest nextRequest = elevatorRequests.peek(); //pobieramy pierwsze zapytanie
-		if ( nextRequest != null && nextRequest.appearTime <= totalElapsedTime ) //warunki Å¼eby to byÅ‚o dobre zapytanie
+		if ( nextRequest != null && nextRequest.appearTime <= totalElapsedTime && (totalElapsedTime-nextRequest.appearTime)<=20*1000) //warunki Å¼eby to byÅ‚o dobre zapytanie
 		{
 			nextRequest = elevatorRequests.poll();   //pobranie z usuniÄ™ciem jednego zapytania
 			elevator.AddOutsideRequest( nextRequest );  //dodanie tego zapytania do listy zapytaÅ„ zewnÄ™trznych w windzie
-			//        floors.get( nextRequest.getStartFloor() ).add( nextRequest );  //dodanie tego zapytania do listy na odpowiednim piÄ™trze
+			floors.get( nextRequest.getStartFloor() ).addRequest(nextRequest); //dodanie tego zapytania do listy na odpowiednim piÄ™trze
 		}
-
 		//for( Elevator elevator : elevators )
 		//{
 		elevator.Simulate( elapsedTime );
