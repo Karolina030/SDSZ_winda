@@ -1,11 +1,16 @@
 package mainPackage;
 
+import java.util.ArrayList;
+
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.layout.GridPane;
 
 public class Elevator
 {
@@ -26,15 +31,17 @@ public class Elevator
 	private int floorToGo = 0;
 	private boolean isMoving = false;
 	private Label heightLabel;
+	private ArrayList<GridPane> panes;
 
 
-	public Elevator( double velocity, int capacity, Label heightLabel )
+	public Elevator( double velocity, int capacity, Label heightLabel, ArrayList<GridPane> panes )
 	{
 		this.velocity = velocity;
 		Capacity = capacity;
 		OutsideRequests = FXCollections.observableArrayList();
 		InsideRequests = FXCollections.observableArrayList();
 		this.heightLabel = heightLabel;
+		this.panes = panes;
 	}
 	
 	
@@ -64,7 +71,7 @@ public class Elevator
 	}
 
 
-	public void AddBuilding( Building building )
+	public void SetBuilding( Building building )
 	{
 		this.building = building;
 	}
@@ -173,11 +180,10 @@ public class Elevator
 	
 	private void MoveUp( long elapsedTime )
 	{
-		currentFloor = (int) Math.floor( currentHeight.doubleValue() / floorHeight );
-
 		if ( currentFloor < floorToGo )
 		{
 			setCurrentHeight( currentHeight.get() + velocity * ((double)elapsedTime / 1000) );
+			SetCurrentFloor( (int) Math.floor( currentHeight.doubleValue() / floorHeight ) );
 		}
 		else
 		{
@@ -188,11 +194,10 @@ public class Elevator
 	
 	private void MoveDown( long elapsedTime )
 	{
-		currentFloor = (int) Math.ceil( currentHeight.doubleValue() / floorHeight );
-
 		if ( currentFloor > floorToGo )
 		{
 			setCurrentHeight( currentHeight.get() - velocity * ((double)elapsedTime / 1000) );
+			SetCurrentFloor( (int) Math.ceil( currentHeight.doubleValue() / floorHeight ) );
 		}
 		else 
 		{
@@ -237,9 +242,47 @@ public class Elevator
 			System.out.println( "Added one person!" );
 		}
 		
+		RefreshPane( panes.get( Building.numOfFloors - currentFloor - 1 ));
+		
 		System.out.println("Number of people in the elevator " + PeopleInside);
 	}
 
+	
+	private void SetCurrentFloor( int floorToSet )
+	{
+		if ( floorToSet < 0 ) floorToSet = 0;
+		if ( floorToSet >= Building.numOfFloors ) floorToSet = Building.numOfFloors - 1;
+		
+		if ( currentFloor != floorToSet )
+		{
+			panes.get( Building.numOfFloors - currentFloor - 1 ).setVisible( false );
+			GridPane currentPane = panes.get( Building.numOfFloors - floorToSet - 1 ); 
+			currentPane.setVisible( true );
+			
+			RefreshPane( currentPane );
+			
+			currentFloor = floorToSet;
+		}
+	}
+	
+	
+	private void RefreshPane( GridPane pane )
+	{
+		ObservableList<Node> children = pane.getChildren();
+		
+		for ( int i = 0; i < children.size(); i++ )
+		{
+			RadioButton button = (RadioButton) children.get( i );
+			button.setSelected( false );
+		}
+		
+		for ( int i = 0; i < InsideRequests.size(); i++ )
+		{
+			RadioButton button = (RadioButton) children.get( InsideRequests.get( i ).getEndFloor() );
+			button.setSelected( true );
+		}
+	}
+	
 	
 	private int GetClosestRequestUp()
 	{

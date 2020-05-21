@@ -53,7 +53,7 @@ public class MyController
 		outsideRequestsStartFloor.setCellValueFactory( new PropertyValueFactory<>( "startFloor" ) );
 		outsideRequestsEndFloor.setCellValueFactory( new PropertyValueFactory<>( "endFloor" ) );
 		
-		Elevator elevator = new Elevator( elevatorVelocity, elevatorCapacity, heightLabel );
+		Elevator elevator = new Elevator( elevatorVelocity, elevatorCapacity, heightLabel, elevatorPanes );
 		Building building = new Building( elevator, numOfFloors, numOfPeople, floorButtons );
 		Simulation simulation = new Simulation( building, simulationTime, simulationSpeed );
 		
@@ -86,8 +86,10 @@ public class MyController
 	
 	private void SetFloorPane( int numOfFloors, int floor )
 	{
-		GridPane elevatorPane = CreateElevatorPane( numOfFloors );		
+		GridPane elevatorPane = CreateElevatorPane( numOfFloors );
 		GridPane requestsPane = CreateRequestsPane();
+		
+		if ( floor != numOfFloors - 1 ) elevatorPane.setVisible( false );
 				
 		buildingPane.addRow( floor, elevatorPane, requestsPane );
 	}

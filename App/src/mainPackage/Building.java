@@ -21,7 +21,7 @@ public class Building
 	{
 		this.elevator = elevator;
 
-		elevator.AddBuilding( this );
+		elevator.SetBuilding( this );
 
 		Building.numOfFloors = numOfFloors;
 		this.numOfPeople = numOfPeople;
