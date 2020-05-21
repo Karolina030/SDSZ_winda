@@ -1,7 +1,11 @@
 package mainPackage;
 
+import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
 
 public class Elevator
 {
@@ -18,17 +22,45 @@ public class Elevator
 	private double velocity = 0.63; // in meters per second
 	private int currentFloor = 0;
 	private Direction direction = Direction.none;
-	private double currentHeight = 0;
+	private final DoubleProperty currentHeight = new SimpleDoubleProperty( 0.0 );
 	private int floorToGo = 0;
 	private boolean isMoving = false;
+	private Label heightLabel;
 
 
-	public Elevator( double velocity, int capacity )
+	public Elevator( double velocity, int capacity, Label heightLabel )
 	{
 		this.velocity = velocity;
 		Capacity = capacity;
 		OutsideRequests = FXCollections.observableArrayList();
 		InsideRequests = FXCollections.observableArrayList();
+		this.heightLabel = heightLabel;
+	}
+	
+	
+	public double getCurrentHeight()
+	{
+		return currentHeight.get();
+	}
+	
+	
+	public void setCurrentHeight( double value )
+	{
+		Platform.runLater( new Runnable()
+				{
+					public void run()
+					{
+						currentHeight.set( value );
+						heightLabel.setText( String.format( "%.2f", currentHeight.get() ));
+						heightLabel.setTranslateY( -heightLabel.getLayoutY() / (Building.numOfFloors * floorHeight) * currentHeight.get());
+					}
+				});
+	}
+	
+	
+	public DoubleProperty currentHeightProperty()
+	{
+		return currentHeight;
 	}
 
 
@@ -136,18 +168,16 @@ public class Elevator
 		{
 			FloorAchieved();
 		}
-		
-		//System.out.println(currentHeight);
 	}
 	
 	
 	private void MoveUp( long elapsedTime )
 	{
-		currentFloor = (int) Math.floor( currentHeight / floorHeight );
+		currentFloor = (int) Math.floor( currentHeight.doubleValue() / floorHeight );
 
 		if ( currentFloor < floorToGo )
 		{
-			currentHeight += velocity * ((double)elapsedTime / 1000);
+			setCurrentHeight( currentHeight.get() + velocity * ((double)elapsedTime / 1000) );
 		}
 		else
 		{
@@ -158,11 +188,11 @@ public class Elevator
 	
 	private void MoveDown( long elapsedTime )
 	{
-		currentFloor = (int) Math.ceil( currentHeight / floorHeight );
+		currentFloor = (int) Math.ceil( currentHeight.doubleValue() / floorHeight );
 
 		if ( currentFloor > floorToGo )
 		{
-			currentHeight -= velocity * ((double)elapsedTime / 1000);
+			setCurrentHeight( currentHeight.get() - velocity * ((double)elapsedTime / 1000) );
 		}
 		else 
 		{

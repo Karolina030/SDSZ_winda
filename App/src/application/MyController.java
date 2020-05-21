@@ -3,19 +3,23 @@ package application;
 import mainPackage.*;
 import javafx.stage.Stage;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
 
 public class MyController
 {
 	Stage stage;
 	@FXML private TableView<ElevatorRequest> insideRequestsTable;
 	@FXML private TableView<ElevatorRequest> outsideRequestsTable;
-	@FXML private TableColumn insideRequestsStartFloor;
-	@FXML private TableColumn insideRequestsEndFloor;
-	@FXML private TableColumn outsideRequestsStartFloor;
-	@FXML private TableColumn outsideRequestsEndFloor;
+	@FXML private TableColumn<ElevatorRequest, Integer> insideRequestsStartFloor;
+	@FXML private TableColumn<ElevatorRequest, Integer> insideRequestsEndFloor;
+	@FXML private TableColumn<ElevatorRequest, Integer> outsideRequestsStartFloor;
+	@FXML private TableColumn<ElevatorRequest, Integer> outsideRequestsEndFloor;
+	@FXML private Label heightLabel;
+	@FXML private Pane heightLabelPane;
 	
 	
 	public void SetStage(Stage s)
@@ -38,7 +42,7 @@ public class MyController
 		int simulationTime = 100;
 		int simulationSpeed = 1;
 		
-		Elevator elevator = new Elevator( elevatorVelocity, elevatorCapacity );
+		Elevator elevator = new Elevator( elevatorVelocity, elevatorCapacity, heightLabel );
 		Building building = new Building( elevator, numOfFloors, numOfPeople );
 		Simulation simulation = new Simulation( building, simulationTime, simulationSpeed );
 		

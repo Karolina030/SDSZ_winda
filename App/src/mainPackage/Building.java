@@ -21,7 +21,7 @@ public class Building
 
 		elevator.AddBuilding( this );
 
-		this.numOfFloors = numOfFloors;
+		Building.numOfFloors = numOfFloors;
 		this.numOfPeople = numOfPeople;
 		start = System.currentTimeMillis();
 

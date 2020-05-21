@@ -1,7 +1,5 @@
 package mainPackage;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Random;
 
 public class Floor {
 
