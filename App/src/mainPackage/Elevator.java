@@ -16,22 +16,24 @@ public class Elevator
 {
 	// height between levels in meters
 	public static double floorHeight = 2.8;
-	
+
+	public ObservableList<ElevatorRequest> OutsideRequests;
+	public ObservableList<ElevatorRequest> InsideRequests;
+
 	// max num of people
 	public int Capacity = 8;
 	public int PeopleInside = 0;
-	public ObservableList<ElevatorRequest> OutsideRequests;
-	public ObservableList<ElevatorRequest> InsideRequests;
-	
+
 	private Building building;
+	private Simulation simulation;
 	private double velocity = 0.63; // in meters per second
 	private int currentFloor = 0;
 	private Direction direction = Direction.none;
 	private final DoubleProperty currentHeight = new SimpleDoubleProperty( 0.0 );
-	private int floorToGo = 0;
+	public int floorToGo = 0;
 	private boolean isMoving = false;
 	private Label heightLabel;
-	private ArrayList<GridPane> panes;
+	public ArrayList<GridPane> panes;
 
 
 	public Elevator( double velocity, int capacity, Label heightLabel, ArrayList<GridPane> panes )
@@ -76,7 +78,7 @@ public class Elevator
 		this.building = building;
 	}
 
-	
+
 	public void Simulate( long elapsedTime )
 	{
 		// Jezeli sie nie poruszamy to wybieramy poziom na ktory pojedziemy
@@ -219,6 +221,7 @@ public class Elevator
 			if ( request.getEndFloor() == currentFloor )
 			{
 				InsideRequests.remove(i);
+				building.InsideRequestsG.remove(request);
 				i--;
 				PeopleInside--;
 				System.out.println( "Removed one person!" );
@@ -237,7 +240,9 @@ public class Elevator
 			
 			building.AddResult( request );
 			OutsideRequests.remove( request );
+			building.OutsideRequestsG.remove(request);
 			InsideRequests.add( request );
+			building.InsideRequestsG.add( request );
 			PeopleInside++;
 			System.out.println( "Added one person!" );
 		}
@@ -367,7 +372,7 @@ public class Elevator
 	private ElevatorRequest GetClosestInsideRequestDown()
 	{
 		ElevatorRequest result = null;
-		
+
 		for( int i = 0; i < InsideRequests.size(); i++ )
 		{
 			ElevatorRequest request = InsideRequests.get( i );
@@ -422,4 +427,5 @@ public class Elevator
 		
 		return result;
 	}
+
 }
