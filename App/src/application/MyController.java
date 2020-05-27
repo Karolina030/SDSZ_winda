@@ -26,9 +26,10 @@ public class MyController
 	@FXML private Label heightLabel;
 	@FXML private Pane heightLabelPane;
 	@FXML private GridPane buildingPane;
-	
-	private ArrayList<GridPane> elevatorPanes = new ArrayList<GridPane>(); 
-	private ArrayList<RadioButton> floorButtons = new ArrayList<RadioButton>(); 
+	Building building;
+
+	private ArrayList<RadioButton> floorButtons = new ArrayList<RadioButton>();
+	private ArrayList<ArrayList<GridPane>> elPanes = new ArrayList<ArrayList<GridPane>>(2);
 	
 	
 	public void SetStage(Stage s)
@@ -46,22 +47,29 @@ public class MyController
 		int simulationTime = 100;
 		int simulationSpeed = 1;
 
-		SetBuildingPane( numOfFloors );
-		
+
+		ArrayList<GridPane> a1 = new ArrayList<GridPane>();
+		ArrayList<GridPane> a2 = new ArrayList<GridPane>();
+		elPanes.add(a1);
+		elPanes.add(a2);
+
 		insideRequestsStartFloor.setCellValueFactory( new PropertyValueFactory<>( "startFloor" ) );
 		insideRequestsEndFloor.setCellValueFactory( new PropertyValueFactory<>( "endFloor" ) );
 		outsideRequestsStartFloor.setCellValueFactory( new PropertyValueFactory<>( "startFloor" ) );
 		outsideRequestsEndFloor.setCellValueFactory( new PropertyValueFactory<>( "endFloor" ) );
-		
-		Elevator elevator = new Elevator( elevatorVelocity, elevatorCapacity, heightLabel, elevatorPanes );
-		Building building = new Building( elevator, numOfFloors, numOfPeople, floorButtons );
+
+		SetBuildingPane( numOfFloors );
+
+
+		Building building = new Building(numOfFloors, numOfPeople, floorButtons, elPanes);
 		Simulation simulation = new Simulation( building, simulationTime, simulationSpeed );
-		
+
 		simulation.start();
+
 		//simulation.stop();
-		
-		insideRequestsTable.setItems( elevator.InsideRequests );
-		outsideRequestsTable.setItems( building.elevator.OutsideRequests );
+
+		insideRequestsTable.setItems( building.InsideRequestsG );
+		outsideRequestsTable.setItems( building.OutsideRequestsG );
 	}
 	
 	
@@ -86,15 +94,21 @@ public class MyController
 	
 	private void SetFloorPane( int numOfFloors, int floor )
 	{
-		GridPane elevatorPane = CreateElevatorPane( numOfFloors );
+
+		GridPane elevatorPane1 = CreateElevatorPane( numOfFloors, 0 );
+		GridPane elevatorPane2 = CreateElevatorPane( numOfFloors, 1 );
+
 		GridPane requestsPane = CreateRequestsPane();
 		
-		if ( floor != numOfFloors - 1 ) elevatorPane.setVisible( false );
+		if ( floor != numOfFloors - 1 ) elevatorPane1.setVisible( false );
+		if ( floor != numOfFloors - 1 ) elevatorPane2.setVisible( false );
 				
-		buildingPane.addRow( floor, elevatorPane, requestsPane );
+		buildingPane.addRow( floor, elevatorPane1, elevatorPane2, requestsPane );
 	}
-	
-	private GridPane CreateElevatorPane( int numOfFloors )
+
+
+
+	private GridPane CreateElevatorPane( int numOfFloors, int elevatorNumber )
 	{
 		GridPane gridPane = new GridPane();
 		
@@ -107,17 +121,17 @@ public class MyController
 			RowConstraints rowConst = new RowConstraints();
 			rowConst.setPercentHeight( 100.0 / (numOfFloors / 2.0) );
 			gridPane.getRowConstraints().add( rowConst );
-			
+
 			RadioButton button1 = new RadioButton( String.valueOf( j * 2 ) );
 			RadioButton button2 = new RadioButton( String.valueOf( j * 2 + 1 ) );
 			gridPane.addRow( j, button1, button2 );
 		}
-		
-		elevatorPanes.add( gridPane );
-		
+		elPanes.get(elevatorNumber).add(gridPane);
+
 		return gridPane;
 	}
-	
+
+
 	private GridPane CreateRequestsPane()
 	{
 		GridPane gridPane = new GridPane();
