@@ -10,8 +10,10 @@ public class RoundRobin {
         this.counter = 0;
     }
 
-    public int choseElevator(ArrayList<Elevator> elevatorGroup, int L) {
-
+    public int chooseElevator( ArrayList<Elevator> elevatorGroup )
+    {
+    	int L = elevatorGroup.size();
+    	
         if (counter == L) {
             counter = 0;
         }

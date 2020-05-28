@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -14,34 +13,27 @@ import javafx.scene.layout.GridPane;
 
 public class Elevator
 {
-	// height between levels in meters
-	public static double floorHeight = 2.8;
-
-	public ObservableList<ElevatorRequest> OutsideRequests;
-	public ObservableList<ElevatorRequest> InsideRequests;
-
 	// max num of people
 	public int Capacity = 8;
 	public int PeopleInside = 0;
 
+	private ArrayList<ElevatorRequest> insideRequests = new ArrayList<ElevatorRequest>();
+	private ArrayList<ElevatorRequest> outsideRequests = new ArrayList<ElevatorRequest>();
 	private Building building;
-	private Simulation simulation;
-	private double velocity = 0.63; // in meters per second
+	private double velocity; // in meters per second
 	private int currentFloor = 0;
 	private Direction direction = Direction.none;
 	private final DoubleProperty currentHeight = new SimpleDoubleProperty( 0.0 );
-	public int floorToGo = 0;
+	private int floorToGo = 0;
 	private boolean isMoving = false;
 	private Label heightLabel;
-	public ArrayList<GridPane> panes;
+	private ArrayList<GridPane> panes;
 
 
 	public Elevator( double velocity, int capacity, Label heightLabel, ArrayList<GridPane> panes )
 	{
 		this.velocity = velocity;
 		Capacity = capacity;
-		OutsideRequests = FXCollections.observableArrayList();
-		InsideRequests = FXCollections.observableArrayList();
 		this.heightLabel = heightLabel;
 		this.panes = panes;
 	}
@@ -60,8 +52,11 @@ public class Elevator
 					public void run()
 					{
 						currentHeight.set( value );
-						heightLabel.setText( String.format( "%.2f", currentHeight.get() ));
-						heightLabel.setTranslateY( -heightLabel.getLayoutY() / (Building.numOfFloors * floorHeight) * currentHeight.get());
+						if ( heightLabel != null )
+						{
+							heightLabel.setText( String.format( "%.2f", currentHeight.get() ));
+							heightLabel.setTranslateY( -heightLabel.getLayoutY() / (Building.numOfFloors * Building.FloorHeight) * currentHeight.get());							
+						}
 					}
 				});
 	}
@@ -103,14 +98,14 @@ public class Elevator
 	
 	public void AddOutsideRequest( ElevatorRequest request )
 	{
-		OutsideRequests.add( request );
+		outsideRequests.add( request );
 	}
 	
 
 	private int ChooseLevelToGo()
 	{
 		// jezeli ktos jest w srodku windy
-		if ( !InsideRequests.isEmpty() )
+		if ( !insideRequests.isEmpty() )
 		{
 			// jezeli winda jechala w gore to staramy sie jechac w gore
 			// "staramy sie" bo moze sie okazac, ze wyzej juz nikogo nie ma
@@ -125,10 +120,10 @@ public class Elevator
 				return GetClosestRequestDown();
 			}
 		}
-		else if ( !OutsideRequests.isEmpty() )
+		else if ( !outsideRequests.isEmpty() )
 		{
 			// sprawdzamy czy najstarsze zadanie jest nizej
-			if ( OutsideRequests.get( 0 ).getStartFloor() < currentFloor )
+			if ( outsideRequests.get( 0 ).getStartFloor() < currentFloor )
 			{
 				// zwracamy najblizsze zadanie w dol
 				return GetClosestOutsideRequestDown().getStartFloor();
@@ -185,7 +180,7 @@ public class Elevator
 		if ( currentFloor < floorToGo )
 		{
 			setCurrentHeight( currentHeight.get() + velocity * ((double)elapsedTime / 1000) );
-			SetCurrentFloor( (int) Math.floor( currentHeight.doubleValue() / floorHeight ) );
+			SetCurrentFloor( (int) Math.floor( currentHeight.doubleValue() / Building.FloorHeight ) );
 		}
 		else
 		{
@@ -199,7 +194,7 @@ public class Elevator
 		if ( currentFloor > floorToGo )
 		{
 			setCurrentHeight( currentHeight.get() - velocity * ((double)elapsedTime / 1000) );
-			SetCurrentFloor( (int) Math.ceil( currentHeight.doubleValue() / floorHeight ) );
+			SetCurrentFloor( (int) Math.ceil( currentHeight.doubleValue() / Building.FloorHeight ) );
 		}
 		else 
 		{
@@ -215,13 +210,13 @@ public class Elevator
 		System.out.println("Floor " + currentFloor + " achieved!");
 		
 		// wysiadajacy
-		for( int i = 0; i < InsideRequests.size(); i++ )
+		for( int i = 0; i < insideRequests.size(); i++ )
 		{
-			ElevatorRequest request = InsideRequests.get( i );
+			ElevatorRequest request = insideRequests.get( i );
 			if ( request.getEndFloor() == currentFloor )
 			{
-				InsideRequests.remove(i);
-				building.InsideRequestsG.remove(request);
+				insideRequests.remove(i);
+				//building.InsideRequestsG.remove(request);
 				i--;
 				PeopleInside--;
 				System.out.println( "Removed one person!" );
@@ -239,15 +234,18 @@ public class Elevator
 			}
 			
 			building.AddResult( request );
-			OutsideRequests.remove( request );
+			outsideRequests.remove( request );
 			building.OutsideRequestsG.remove(request);
-			InsideRequests.add( request );
-			building.InsideRequestsG.add( request );
+			insideRequests.add( request );
+			//building.InsideRequestsG.add( request );
 			PeopleInside++;
 			System.out.println( "Added one person!" );
 		}
 		
-		RefreshPane( panes.get( Building.numOfFloors - currentFloor - 1 ));
+		if ( panes != null )
+		{
+			RefreshPane( panes.get( Building.numOfFloors - currentFloor - 1 ));
+		}
 		
 		System.out.println("Number of people in the elevator " + PeopleInside);
 	}
@@ -260,11 +258,14 @@ public class Elevator
 		
 		if ( currentFloor != floorToSet )
 		{
-			panes.get( Building.numOfFloors - currentFloor - 1 ).setVisible( false );
-			GridPane currentPane = panes.get( Building.numOfFloors - floorToSet - 1 ); 
-			currentPane.setVisible( true );
-			
-			RefreshPane( currentPane );
+			if ( panes != null )
+			{
+				panes.get( Building.numOfFloors - currentFloor - 1 ).setVisible( false );
+				GridPane currentPane = panes.get( Building.numOfFloors - floorToSet - 1 ); 
+				currentPane.setVisible( true );
+				
+				RefreshPane( currentPane );				
+			}
 			
 			currentFloor = floorToSet;
 		}
@@ -281,9 +282,9 @@ public class Elevator
 			button.setSelected( false );
 		}
 		
-		for ( int i = 0; i < InsideRequests.size(); i++ )
+		for ( int i = 0; i < insideRequests.size(); i++ )
 		{
-			RadioButton button = (RadioButton) children.get( InsideRequests.get( i ).getEndFloor() );
+			RadioButton button = (RadioButton) children.get( insideRequests.get( i ).getEndFloor() );
 			button.setSelected( true );
 		}
 	}
@@ -353,9 +354,9 @@ public class Elevator
 	{
 		ElevatorRequest result = null;
 		
-		for( int i = 0; i < InsideRequests.size(); i++ )
+		for( int i = 0; i < insideRequests.size(); i++ )
 		{
-			ElevatorRequest request = InsideRequests.get( i );
+			ElevatorRequest request = insideRequests.get( i );
 			if ( request.getEndFloor() >= currentFloor )
 			{
 				if ( result == null || request.getEndFloor() < result.getEndFloor() )
@@ -373,9 +374,9 @@ public class Elevator
 	{
 		ElevatorRequest result = null;
 
-		for( int i = 0; i < InsideRequests.size(); i++ )
+		for( int i = 0; i < insideRequests.size(); i++ )
 		{
-			ElevatorRequest request = InsideRequests.get( i );
+			ElevatorRequest request = insideRequests.get( i );
 			if ( request.getEndFloor() <= currentFloor )
 			{
 				if ( result == null || request.getEndFloor() > result.getEndFloor() )
@@ -393,9 +394,9 @@ public class Elevator
 	{
 		ElevatorRequest result = null;
 		
-		for( int i = 0; i < OutsideRequests.size(); i++ )
+		for( int i = 0; i < outsideRequests.size(); i++ )
 		{
-			ElevatorRequest request = OutsideRequests.get( i );
+			ElevatorRequest request = outsideRequests.get( i );
 			if ( request.getStartFloor() >= currentFloor )
 			{
 				if ( result == null || request.getStartFloor() < result.getStartFloor() )
@@ -413,9 +414,9 @@ public class Elevator
 	{
 		ElevatorRequest result = null;
 		
-		for( int i = 0; i < OutsideRequests.size(); i++ )
+		for( int i = 0; i < outsideRequests.size(); i++ )
 		{
-			ElevatorRequest request = OutsideRequests.get( i );
+			ElevatorRequest request = outsideRequests.get( i );
 			if ( request.getStartFloor() <= currentFloor )
 			{
 				if ( result == null || request.getStartFloor() > result.getStartFloor() )

@@ -10,18 +10,18 @@ import javafx.scene.layout.GridPane;
 
 public class Building
 {
+	// height between levels in meters
+	public static double FloorHeight = 2.8;
+	public static int numOfFloors = 8;
 
-	public ArrayList<Elevator> elevatorGroup;// tablica L wind
-	public int L=2; // ilość wind
+	private ArrayList<Elevator> elevators;
 	private RoundRobin roundRobin;
-	double elevatorVelocity = 0.63;
-	int elevatorCapacity = 8;
+	private double elevatorVelocity = 0.63;
+	private int elevatorCapacity = 8;
 	public ObservableList<ElevatorRequest> OutsideRequestsG;
-	public ObservableList<ElevatorRequest> InsideRequestsG;
 	public long elapsedTime;
 	public int counter;
 
-	static int numOfFloors=8;
 	private int numOfPeople;
 	private int numOfResults = 0;
 	private long totalWaitingTime = 0;
@@ -31,22 +31,12 @@ public class Building
 	public PriorityQueue<ElevatorRequest> elevatorRequests;
 	private ArrayList<Floor> floors;
 
-	public Building( int numOfFloors, int numOfPeople, ArrayList<RadioButton> buttons, ArrayList<ArrayList<GridPane>> elPanes )
+	public Building( int numOfFloors, int numOfPeople, ArrayList<Elevator> elevators, ArrayList<RadioButton> buttons )
 	{
 		this.roundRobin = new RoundRobin();
-
-		elevatorGroup = new ArrayList<Elevator>(L);
-		for( int i = 0; i < L; i++ )
-		{
-			ArrayList<GridPane> elevatorPanes = elPanes.get(i);
-			Label heightLabel = new Label();
-			Elevator elevator = new Elevator(elevatorVelocity, elevatorCapacity, heightLabel, elevatorPanes );
-			elevatorGroup.add( elevator);
-			elevatorGroup.get(i).SetBuilding(this);
-		}
+		this.elevators = elevators;
 
 		OutsideRequestsG = FXCollections.observableArrayList();
-		InsideRequestsG = FXCollections.observableArrayList();
 
 		Building.numOfFloors = numOfFloors;
 		this.numOfPeople = numOfPeople;
@@ -66,19 +56,18 @@ public class Building
 		Random rand = new Random();
 
 		int startFloor = rand.nextInt( Building.numOfFloors );
-		int time = rand.nextInt(simulationTime);// start
-		for( int i = 0; i < people; i++ ) {
+		int time = rand.nextInt( simulationTime );// start
+		for( int i = 0; i < people; i++ )
+		{
 			int endFloor;
 			do
 			{
 				endFloor = rand.nextInt( Building.numOfFloors );
 			} while ( endFloor == startFloor );
-			int appearTime = rand.nextInt( 20000) + time;
+			int appearTime = rand.nextInt( 20000 ) + time;
 
-			elevatorRequests.add( new ElevatorRequest(startFloor, endFloor, appearTime) );
-
+			elevatorRequests.add( new ElevatorRequest( startFloor, endFloor, appearTime ) );
 		}
-
 	}
 
 	// przypisuje kazdemu pasazerowi losowe zadanie i czas pojawienia
@@ -119,16 +108,16 @@ public class Building
 			nextRequest = elevatorRequests.poll();
 			elevatorRequests.remove(nextRequest);
 			// wybieramy numer windy
-			chosenElevator = roundRobin.choseElevator(elevatorGroup, L);
+			chosenElevator = roundRobin.chooseElevator(elevators);
 			// dodajemy to zadanie do zadan zewnetrznych windy
-			elevatorGroup.get(chosenElevator).AddOutsideRequest( nextRequest );
+			elevators.get(chosenElevator).AddOutsideRequest( nextRequest );
 			OutsideRequestsG.add(nextRequest);
 
 			//dodajemy to zadanie do listy na odpowiednim pietrze
 			floors.get( nextRequest.getStartFloor() ).addRequest( nextRequest );
 		}
 
-		for( Elevator elevator : elevatorGroup )
+		for( Elevator elevator : elevators )
 		{
 			elevator.Simulate( elapsedTime );
 		}

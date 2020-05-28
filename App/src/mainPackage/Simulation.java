@@ -72,4 +72,7 @@ public class Simulation extends Thread
 	{
 		building.Simulate( elapsedTime, totalElapsedTime );
 	}
+	
+	
+	
 }

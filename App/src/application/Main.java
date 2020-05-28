@@ -18,12 +18,12 @@ public class Main extends Application {
 	{
 		try
 		{
-			FXMLLoader loader = new FXMLLoader( this.getClass().getResource( "Sample.fxml" ) );
-			AnchorPane root = loader.load();
-			MyController controller = loader.getController();
-			controller.SetStage( primaryStage );
+			FXMLLoader mainLoader = new FXMLLoader( this.getClass().getResource( "Main.fxml" ) );
+			AnchorPane mainRoot = mainLoader.load();
+			MainController mainController = mainLoader.getController();
+			Scene scene = new Scene( mainRoot, 850, 850 );
 			
-			Scene scene = new Scene( root, 850, 850 );
+			mainController.SetStage( primaryStage );			
 			
 			primaryStage.setScene( scene );
 			primaryStage.setTitle( "Elevator simulation" );
