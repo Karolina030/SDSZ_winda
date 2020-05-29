@@ -4,12 +4,14 @@ import mainPackage.*;
 
 import java.util.ArrayList;
 import javafx.stage.Stage;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 
 public class SimulationController
@@ -22,6 +24,10 @@ public class SimulationController
 	@FXML private Label height2Label;
 	@FXML private GridPane elevator1Pane;
 	@FXML private GridPane elevator2Pane;
+	
+	@FXML private Pane resultsPane;
+	@FXML private Label numOfPeopleLabel;
+	@FXML private Label avgWaitingTimeLabel;
 
 	private ArrayList<RadioButton> floorButtons = new ArrayList<RadioButton>();
 	private Simulation simulation;
@@ -41,7 +47,7 @@ public class SimulationController
 			int numOfPeopleInGroup,
 			int groupFloor)
 	{
-		int simulationTime = 100;
+		int simulationTime = 30;
 		int simulationSpeed = 1;
 		
 		ArrayList<Elevator> elevators = new ArrayList<Elevator>();
@@ -61,7 +67,7 @@ public class SimulationController
 			elevators.get(i).SetBuilding( building );
 		}
 		
-		simulation = new Simulation( building, simulationTime, simulationSpeed );	
+		simulation = new Simulation( building, simulationTime, simulationSpeed, this );	
 	}
 	
 	
@@ -70,6 +76,20 @@ public class SimulationController
 		startButton.setDisable( true );
 		
 		simulation.start();
+	}
+	
+	
+	public void ShowResults( Results results )
+	{
+		Platform.runLater( new Runnable()
+		{
+			public void run()
+			{
+				resultsPane.setVisible( true );
+				numOfPeopleLabel.setText( String.valueOf( results.TotalPeople ) );
+				avgWaitingTimeLabel.setText( String.valueOf( results.AvgWaitingTime ) );
+			}
+		});
 	}
 	
 	

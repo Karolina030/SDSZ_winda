@@ -1,12 +1,7 @@
 package mainPackage;
 
 import java.util.*;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
-import javafx.scene.layout.GridPane;
 
 public class Building
 {
@@ -16,9 +11,7 @@ public class Building
 
 	private ArrayList<Elevator> elevators;
 	private RoundRobin roundRobin;
-	private double elevatorVelocity = 0.63;
-	private int elevatorCapacity = 8;
-	public ObservableList<ElevatorRequest> OutsideRequestsG;
+	public ArrayList<ElevatorRequest> OutsideRequests = new ArrayList<ElevatorRequest>();
 	public long elapsedTime;
 	public int counter;
 
@@ -35,9 +28,6 @@ public class Building
 	{
 		this.roundRobin = new RoundRobin();
 		this.elevators = elevators;
-
-		OutsideRequestsG = FXCollections.observableArrayList();
-
 		Building.numOfFloors = numOfFloors;
 		this.numOfPeople = numOfPeople;
 		start = System.currentTimeMillis();
@@ -111,7 +101,7 @@ public class Building
 			chosenElevator = roundRobin.chooseElevator(elevators);
 			// dodajemy to zadanie do zadan zewnetrznych windy
 			elevators.get(chosenElevator).AddOutsideRequest( nextRequest );
-			OutsideRequestsG.add(nextRequest);
+			OutsideRequests.add(nextRequest);
 
 			//dodajemy to zadanie do listy na odpowiednim pietrze
 			floors.get( nextRequest.getStartFloor() ).addRequest( nextRequest );
@@ -136,9 +126,9 @@ public class Building
 		totalWaitingTime += totalElapsedTime - request.appearTime;
 	}
 
-	public double GetResults()
+	public Results GetResults()
 	{
-		double result = totalWaitingTime / numOfResults / 1000;
-		return result;
+		Results results = new Results( numOfResults, totalWaitingTime / numOfResults / 1000 );
+		return results;
 	}
 }

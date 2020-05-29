@@ -216,7 +216,6 @@ public class Elevator
 			if ( request.getEndFloor() == currentFloor )
 			{
 				insideRequests.remove(i);
-				//building.InsideRequestsG.remove(request);
 				i--;
 				PeopleInside--;
 				System.out.println( "Removed one person!" );
@@ -235,9 +234,8 @@ public class Elevator
 			
 			building.AddResult( request );
 			outsideRequests.remove( request );
-			building.OutsideRequestsG.remove(request);
+			building.OutsideRequests.remove(request);
 			insideRequests.add( request );
-			//building.InsideRequestsG.add( request );
 			PeopleInside++;
 			System.out.println( "Added one person!" );
 		}
@@ -357,7 +355,7 @@ public class Elevator
 		for( int i = 0; i < insideRequests.size(); i++ )
 		{
 			ElevatorRequest request = insideRequests.get( i );
-			if ( request.getEndFloor() >= currentFloor )
+			if ( request.getEndFloor() > currentFloor )
 			{
 				if ( result == null || request.getEndFloor() < result.getEndFloor() )
 				{
@@ -377,7 +375,7 @@ public class Elevator
 		for( int i = 0; i < insideRequests.size(); i++ )
 		{
 			ElevatorRequest request = insideRequests.get( i );
-			if ( request.getEndFloor() <= currentFloor )
+			if ( request.getEndFloor() < currentFloor )
 			{
 				if ( result == null || request.getEndFloor() > result.getEndFloor() )
 				{
@@ -397,7 +395,7 @@ public class Elevator
 		for( int i = 0; i < outsideRequests.size(); i++ )
 		{
 			ElevatorRequest request = outsideRequests.get( i );
-			if ( request.getStartFloor() >= currentFloor )
+			if ( request.getStartFloor() > currentFloor )
 			{
 				if ( result == null || request.getStartFloor() < result.getStartFloor() )
 				{
@@ -417,7 +415,7 @@ public class Elevator
 		for( int i = 0; i < outsideRequests.size(); i++ )
 		{
 			ElevatorRequest request = outsideRequests.get( i );
-			if ( request.getStartFloor() <= currentFloor )
+			if ( request.getStartFloor() < currentFloor )
 			{
 				if ( result == null || request.getStartFloor() > result.getStartFloor() )
 				{

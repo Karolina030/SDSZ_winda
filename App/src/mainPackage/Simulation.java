@@ -1,5 +1,7 @@
 package mainPackage;
 
+import application.SimulationController;
+
 public class Simulation extends Thread
 {
 	private Building building;
@@ -13,13 +15,15 @@ public class Simulation extends Thread
 	private long elapsedTime;
 	private long totalElapsedTime;
 	private long sleepTime;
+	private SimulationController simulationController;
 	
 	
-	public Simulation( Building building, long simulationTimeInSeconds, int simulationSpeed )
+	public Simulation( Building building, long simulationTimeInSeconds, int simulationSpeed, SimulationController simulationController )
 	{
 		this.building = building;
 		this.simulationTime = (int) simulationTimeInSeconds * 1000 * simulationSpeed;
 		this.simulationSpeed = simulationSpeed;
+		this.simulationController = simulationController;
 	}
 	
 	
@@ -64,7 +68,8 @@ public class Simulation extends Thread
 	    }
 	    
 	    System.out.println("Simulation ended!");
-		System.out.println("Average waiting time: " + building.GetResults());
+	    
+	    simulationController.ShowResults( building.GetResults() );
 	}
 	
 	
