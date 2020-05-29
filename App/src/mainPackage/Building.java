@@ -128,7 +128,7 @@ public class Building
 
 	public Results GetResults()
 	{
-		Results results = new Results( numOfResults, totalWaitingTime / numOfResults / 1000 );
+		Results results = new Results( numOfResults, totalWaitingTime / numOfResults / 1000.0 );
 		return results;
 	}
 }

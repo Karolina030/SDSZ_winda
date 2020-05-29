@@ -11,7 +11,7 @@ public class Simulation extends Thread
 	private int updatesPerSecond = 5;
 	private int targetTime = 1000 / updatesPerSecond;
 	private long currentTime;
-	private long lastTime = System.currentTimeMillis();
+	private long lastTime;
 	private long elapsedTime;
 	private long totalElapsedTime;
 	private long sleepTime;
@@ -31,7 +31,7 @@ public class Simulation extends Thread
 	public void run()
 	{
 		System.out.println( "Starting simulation!" );
-		
+		lastTime = System.currentTimeMillis();
 		building.GeneratePeopleQueue( simulationTime );
 		
 	    while ( totalElapsedTime < simulationTime )
@@ -77,7 +77,4 @@ public class Simulation extends Thread
 	{
 		building.Simulate( elapsedTime, totalElapsedTime );
 	}
-	
-	
-	
 }
