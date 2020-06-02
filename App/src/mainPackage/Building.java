@@ -41,7 +41,7 @@ public class Building
 		}
 	}
 
-	public void GenerateEvent( int simulationTime, int people, int floor )
+	public void GenerateEvent( int simulationTime, int period, int people, int floor )
 	{
 		Random rand = new Random();
 
@@ -55,7 +55,8 @@ public class Building
 			startFloor = floor;
 		}
 		
-		int time = rand.nextInt( simulationTime );// start
+		int time = rand.nextInt( simulationTime - period );// start
+		System.out.println( time );
 		for( int i = 0; i < people; i++ )
 		{
 			int endFloor;
@@ -63,7 +64,8 @@ public class Building
 			{
 				endFloor = rand.nextInt( Building.numOfFloors );
 			} while ( endFloor == startFloor );
-			int appearTime = rand.nextInt( 20000 ) + time;
+			int appearTime = rand.nextInt( period ) + time;
+			System.out.println( appearTime );
 
 			elevatorRequests.add( new ElevatorRequest( startFloor, endFloor, appearTime ) );
 		}

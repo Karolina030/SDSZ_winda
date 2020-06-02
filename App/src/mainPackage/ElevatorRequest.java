@@ -10,7 +10,7 @@ public class ElevatorRequest implements Comparable<ElevatorRequest>
 	{
 		this.setStartFloor(startFloor);
 		this.setEndFloor(endFloor);
-		this.appearTime = appearTime;
+		this.appearTime = appearTime * 1000;
 	}
 
 	@Override

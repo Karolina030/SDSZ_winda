@@ -23,6 +23,10 @@ public class MainController
 	@FXML private TextField numOfPeopleTextField;
 	@FXML private TextField numOfPeopleInGroupTextField;
 	@FXML private TextField groupFloorTextField;
+	@FXML private TextField groupPeriodTextField;
+	
+	// Simulation variables
+	@FXML private TextField simulationTimeTextField;
 
 	
 	public void SetStage(Stage s)
@@ -47,6 +51,8 @@ public class MainController
 			int numOfPeople = Integer.parseInt( numOfPeopleTextField.getText() );
 			int numOfPeopleInGroup = Integer.parseInt( numOfPeopleInGroupTextField.getText() );
 			int groupFloor = Integer.parseInt( groupFloorTextField.getText() );
+			int simulationTime = Integer.parseInt( simulationTimeTextField.getText() );
+			int groupPeriodTime = Integer.parseInt( groupPeriodTextField.getText() );
 			
 			simulationController.SetupSimulation(
 					numOfElevators,
@@ -55,7 +61,9 @@ public class MainController
 					numOfFloors,
 					numOfPeople,
 					numOfPeopleInGroup,
-					groupFloor);
+					groupFloor,
+					simulationTime,
+					groupPeriodTime );
 			
 			stage.getScene().setRoot( simulationRoot );
 		} catch ( IOException e )

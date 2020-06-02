@@ -45,9 +45,10 @@ public class SimulationController
 			int numOfFloors,
 			int numOfPeople,
 			int numOfPeopleInGroup,
-			int groupFloor)
+			int groupFloor,
+			int simulationTime,
+			int groupPeriodTime )
 	{
-		int simulationTime = 30;
 		int simulationSpeed = 1;
 		
 		ArrayList<Elevator> elevators = new ArrayList<Elevator>();
@@ -62,7 +63,7 @@ public class SimulationController
 		
 		Building building = new Building( numOfFloors, numOfPeople, elevators, floorButtons );
 		building.GeneratePeopleQueue( simulationTime );
-		building.GenerateEvent( simulationTime, numOfPeopleInGroup, groupFloor );
+		building.GenerateEvent( simulationTime, groupPeriodTime, numOfPeopleInGroup, groupFloor );
 		
 		for( int i = 0; i < numOfElevators; i++ )
 		{
