@@ -32,7 +32,6 @@ public class Simulation extends Thread
 	{
 		System.out.println( "Starting simulation!" );
 		lastTime = System.currentTimeMillis();
-		building.GeneratePeopleQueue( simulationTime );
 		
 	    while ( totalElapsedTime < simulationTime )
 	    {

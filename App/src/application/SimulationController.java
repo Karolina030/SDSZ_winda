@@ -61,6 +61,8 @@ public class SimulationController
 		SetBuildingPane( numOfFloors );
 		
 		Building building = new Building( numOfFloors, numOfPeople, elevators, floorButtons );
+		building.GeneratePeopleQueue( simulationTime );
+		building.GenerateEvent( simulationTime, numOfPeopleInGroup, groupFloor );
 		
 		for( int i = 0; i < numOfElevators; i++ )
 		{

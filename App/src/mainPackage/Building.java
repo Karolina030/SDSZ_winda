@@ -41,11 +41,20 @@ public class Building
 		}
 	}
 
-	public void GenerateEvent( int simulationTime, int people)
+	public void GenerateEvent( int simulationTime, int people, int floor )
 	{
 		Random rand = new Random();
 
-		int startFloor = rand.nextInt( Building.numOfFloors );
+		int startFloor;
+		if ( floor == -1 )
+		{
+			startFloor = rand.nextInt( Building.numOfFloors );
+		}
+		else
+		{
+			startFloor = floor;
+		}
+		
 		int time = rand.nextInt( simulationTime );// start
 		for( int i = 0; i < people; i++ )
 		{
@@ -80,7 +89,6 @@ public class Building
 			// sortuje sie automatycznie za pomoca CompareTo
 			elevatorRequests.add( new ElevatorRequest(startFloor, endFloor, appearTime) );
 		}
-		GenerateEvent(simulationTime,10);
 	}
 
 	public void Simulate( long elapsedTime, long totalElapsedTime )

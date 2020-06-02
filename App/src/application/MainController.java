@@ -46,7 +46,7 @@ public class MainController
 			int numOfFloors = Integer.parseInt( numOfFloorsTextField.getText() );
 			int numOfPeople = Integer.parseInt( numOfPeopleTextField.getText() );
 			int numOfPeopleInGroup = Integer.parseInt( numOfPeopleInGroupTextField.getText() );
-			int groupFloor = Integer.parseInt( numOfElevatorsTextField.getText() );
+			int groupFloor = Integer.parseInt( groupFloorTextField.getText() );
 			
 			simulationController.SetupSimulation(
 					numOfElevators,
