@@ -122,6 +122,11 @@ public class Elevator
 		}
 		else if ( !outsideRequests.isEmpty() )
 		{
+			if ( outsideRequests.get( 0 ).getStartFloor() == currentFloor && PeopleInside != Capacity )
+			{
+				return currentFloor;
+			}
+			
 			// sprawdzamy czy najstarsze zadanie jest nizej
 			if ( outsideRequests.get( 0 ).getStartFloor() < currentFloor )
 			{
@@ -159,46 +164,29 @@ public class Elevator
 	
 	
 	private void Move( long elapsedTime )
-	{		
-		if ( direction == Direction.up )
+	{
+		if ( direction == Direction.none || currentFloor == floorToGo )
 		{
-			MoveUp( elapsedTime );
-		}
-		else if ( direction == Direction.down )
-		{
-			MoveDown( elapsedTime );
+			FloorAchieved();
 		}
 		else
 		{
-			FloorAchieved();
-		}
-	}
+			double height;
+			int floor;
 	
-	
-	private void MoveUp( long elapsedTime )
-	{
-		if ( currentFloor < floorToGo )
-		{
-			setCurrentHeight( currentHeight.get() + velocity * ((double)elapsedTime / 1000) );
-			SetCurrentFloor( (int) Math.floor( currentHeight.doubleValue() / Building.FloorHeight ) );
-		}
-		else
-		{
-			FloorAchieved();
-		}
-	}
-	
-	
-	private void MoveDown( long elapsedTime )
-	{
-		if ( currentFloor > floorToGo )
-		{
-			setCurrentHeight( currentHeight.get() - velocity * ((double)elapsedTime / 1000) );
-			SetCurrentFloor( (int) Math.ceil( currentHeight.doubleValue() / Building.FloorHeight ) );
-		}
-		else 
-		{
-			FloorAchieved();
+			if ( direction == Direction.up )
+			{
+				height = currentHeight.get() + velocity * ((double)elapsedTime / 1000);
+				floor = (int) Math.floor( currentHeight.doubleValue() / Building.FloorHeight );
+			}
+			else
+			{
+				height = currentHeight.get() - velocity * ((double)elapsedTime / 1000);
+				floor = (int) Math.ceil( currentHeight.get() / Building.FloorHeight );
+			}
+			
+			setCurrentHeight( height );
+			SetCurrentFloor( floor );
 		}
 	}
 	

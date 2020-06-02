@@ -111,8 +111,6 @@ public class Building
 		{
 			elevator.Simulate( elapsedTime );
 		}
-
-
 	}
 
 	public ElevatorRequest GetFloorRequest( int floor )
