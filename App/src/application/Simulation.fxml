@@ -14,7 +14,17 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.SimulationController">
    <children>
-      <Button fx:id="startButton" layoutX="736.0" layoutY="811.0" mnemonicParsing="false" onAction="#StartSimulation" text="Start simulation" />
+      <Label fx:id="label1" layoutX="213.0" layoutY="845.0" text="Elevators">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="label2" layoutX="567.0" layoutY="845.0" text="Requests">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Button fx:id="startButton" layoutX="750.0" layoutY="811.0" mnemonicParsing="false" onAction="#StartSimulation" text="Start simulation" />
       <GridPane fx:id="elevator1Pane" gridLinesVisible="true" layoutX="275.0"  layoutY="15.0" prefHeight="820.0" prefWidth="198.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="198.0" minWidth="10.0" percentWidth="100.0" prefWidth="190.0" />
@@ -51,23 +61,23 @@
       </GridPane>
       <Pane fx:id="resultsPane" layoutX="731.0" layoutY="5.0" prefHeight="801.0" prefWidth="108.0" visible="false">
          <children>
-            <Label layoutX="27.0" layoutY="14.0" text="Results">
+            <Label fx:id="Results" layoutX="27.0" layoutY="14.0" text="Results">
                <font>
                   <Font name="System Bold" size="16.0" />
                </font>
             </Label>
-            <Label layoutX="6.0" layoutY="39.0" prefHeight="59.0" prefWidth="108.0" text="Number of people that used the elevators:" wrapText="true" />
-            <Label fx:id="numOfPeopleLabel" layoutX="46.0" layoutY="98.0" text="Label">
+            <Label layoutX="36.0" layoutY="49.0" prefHeight="100.0" prefWidth="108.0" text="Number of people that used the elevators:" wrapText="true" />
+            <Label fx:id="numOfPeopleLabel" layoutX="70.0" layoutY="140.0" text="Label">
                <font>
                   <Font name="System Italic" size="12.0" />
                </font>
             </Label>
-            <Label fx:id="avgWaitingTimeLabel" layoutX="46.0" layoutY="205.0" text="Label">
+            <Label fx:id="avgWaitingTimeLabel" layoutX="66.0" layoutY="240.0" text="Label">
                <font>
                   <Font name="System Italic" size="12.0" />
                </font>
             </Label>
-            <Label layoutX="6.0" layoutY="146.0" prefHeight="59.0" prefWidth="108.0" text="Average waiting time per person:" wrapText="true" />
+            <Label layoutX="36.0" layoutY="170.0" prefHeight="59.0" prefWidth="108.0" text="Average waiting time per person:" wrapText="true" />
          </children>
       </Pane>
    </children>

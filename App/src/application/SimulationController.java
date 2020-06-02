@@ -1,5 +1,7 @@
 package application;
 
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import mainPackage.*;
 
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ public class SimulationController
 	@FXML private Pane resultsPane;
 	@FXML private Label numOfPeopleLabel;
 	@FXML private Label avgWaitingTimeLabel;
+
 
 	private ArrayList<RadioButton> floorButtons = new ArrayList<RadioButton>();
 	private Simulation simulation;
@@ -148,6 +151,8 @@ public class SimulationController
 				
 				RadioButton button1 = new RadioButton( String.valueOf( j * 2 ) );
 				RadioButton button2 = new RadioButton( String.valueOf( j * 2 + 1 ) );
+				GridPane.setHalignment(button1, HPos.CENTER);
+				GridPane.setHalignment(button2, HPos.CENTER);
 				gridPane.addRow( j, button1, button2 );
 			}
 			if ( i != numOfFloors - 1 )
@@ -197,7 +202,6 @@ public class SimulationController
 	private GridPane CreateRequestsPane()
 	{
 		GridPane gridPane = new GridPane();
-		
 		ColumnConstraints colConst = new ColumnConstraints();
 		colConst.setPercentWidth( 100.0 );
 		gridPane.getColumnConstraints().add( colConst );
@@ -207,7 +211,9 @@ public class SimulationController
 		gridPane.getRowConstraints().add( rowConst );
 		
 		RadioButton button = new RadioButton( "0" );
-		gridPane.add( button, 0, 0 );
+		gridPane.add( button, 0, 0);
+		GridPane.setHalignment(button, HPos.CENTER);
+
 		floorButtons.add( button );
 		
 		return gridPane;
