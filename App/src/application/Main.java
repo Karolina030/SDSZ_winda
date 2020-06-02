@@ -22,9 +22,8 @@ public class Main extends Application {
 			AnchorPane mainRoot = mainLoader.load();
 			MainController mainController = mainLoader.getController();
 			Scene scene = new Scene( mainRoot, 850, 850 );
-			
-			mainController.SetStage( primaryStage );			
-			
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			mainController.SetStage( primaryStage );
 			primaryStage.setScene( scene );
 			primaryStage.setTitle( "Elevator simulation" );
 			primaryStage.show();

@@ -1,1 +1,133 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+.root{
+    -fx-font-family: "Helvetica";
+    -fx-base: rgb(255, 255, 255);
+    -fx-background: rgb(27, 40, 45);
+    -fx-padding: 10;
+    -fx-border-style: solid inside;
+    -fx-border-width: 2;
+    -fx-border-insets: 5;
+    -fx-border-radius: 5;
+}
+
+.button {
+    -fx-padding: 5 22 5 22;
+    -fx-border-color: #e2e2e2;
+    -fx-border-width: 2;
+    -fx-background-radius: 0;
+    -fx-background-color: #1d1d1d;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 11pt;
+    -fx-text-fill: #d8d8d8;
+    -fx-background-insets: 0 0 0 0, 0, 1, 2;
+}
+
+.button:hover {
+    -fx-background-color: #3a3a3a;
+}
+
+.button:pressed, .button:default:hover:pressed {
+    -fx-background-color: white;
+    -fx-text-fill: #1d1d1d;
+}
+
+.button:focused {
+    -fx-border-color: white, white;
+    -fx-border-width: 1, 1;
+    -fx-border-style: solid, segments(1, 1);
+    -fx-border-radius: 0, 0;
+    -fx-border-insets: 1 1 1 1, 0;
+}
+
+.button:disabled, .button:default:disabled {
+    -fx-opacity: 0.4;
+    -fx-background-color: #1d1d1d;
+    -fx-text-fill: white;
+}
+
+.button:default {
+    -fx-background-color: -fx-focus-color;
+    -fx-text-fill: #ffffff;
+}
+
+.button:default:hover {
+    -fx-background-color: derive(-fx-focus-color,30%);
+}
+
+
+
+.label {
+
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow( gaussian , rgba(125, 127, 128, 0.5), 0,0,0,1 );
+
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: white;
+    -fx-opacity: 1;
+
+
+}
+
+
+#People {
+    -fx-font-size: 32px;
+    -fx-font-family: "Arial Black";
+    -fx-fill: #818181;
+    -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 6, 0.0 , 0 , 2 );
+
+}
+ #Elevators {
+     -fx-font-size: 32px;
+     -fx-font-family: "Arial Black";
+     -fx-fill: #818181;
+     -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 6, 0.0 , 0 , 2 );
+ }
+
+ #Building {
+     -fx-font-size: 32px;
+     -fx-font-family: "Arial Black";
+     -fx-fill: #818181;
+     -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 6, 0.0 , 0 , 2 );
+ }
+#Group {
+    -fx-font-size: 32px;
+    -fx-font-family: "Arial Black";
+    -fx-fill: #818181;
+    -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 6, 0.0 , 0 , 2 );
+}
+
+
+.text-field:focused {
+    -fx-background-color: #3b3838, #ffffff, #d3d7db;
+    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 1 -1;
+}
+
+.text-field {
+    -fx-font-size: 12pt;
+    -fx-font-family: "Segoe UI Semibold";
+}
+
+#buildingPane {
+    -fx-background-insets: 0, 1 ;
+    -fx-padding: 1 ;
+    -fx-background-color: #4b5a66;
+    -fx-grid-lines-visible: true;
+    -fx-border-color: #d3d7db;
+}
+#elevator1Pane {
+    -fx-background-insets: 0, 1 ;
+    -fx-padding: 1 ;
+    -fx-background-color: #4b6165;
+    -fx-grid-lines-visible: true;
+    -fx-border-color: #d3d7db;
+}
+
+#elevator2Pane {
+    -fx-background-insets: 0, 1 ;
+    -fx-background-color: #4b6165;
+    -fx-padding: 1 ;
+    -fx-grid-lines-visible: true;
+    -fx-border-color: #d3d7db;
+}
