@@ -10,7 +10,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.GridPane;
-import sun.net.www.content.audio.x_aiff;
 
 public class Elevator
 {
@@ -416,5 +415,4 @@ public class Elevator
 		
 		return result;
 	}
-
 }

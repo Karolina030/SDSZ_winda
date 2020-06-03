@@ -141,33 +141,20 @@ public class SimulationController
 			colConst.setPercentWidth( 50.0 );
 			gridPane.getColumnConstraints().addAll( colConst, colConst );
 
-			if (numOfFloors%2 ==0) {
-				for ( int j = 0; j < numOfFloors / 2; j++ )
-				{
-					RowConstraints rowConst = new RowConstraints();
-					rowConst.setPercentHeight( 100.0 / (numOfFloors / 2.0) );
-					gridPane.getRowConstraints().add( rowConst );
-
-					RadioButton button1 = new RadioButton( String.valueOf( j * 2 ) );
-					RadioButton button2 = new RadioButton( String.valueOf( j * 2 + 1 ) );
-					GridPane.setHalignment(button1, HPos.CENTER);
-					GridPane.setHalignment(button2, HPos.CENTER);
-					gridPane.addRow( j, button1, button2 );
-				}
+			for ( int j = 0; j < numOfFloors / 2; j++ )
+			{
+				RowConstraints rowConst = new RowConstraints();
+				rowConst.setPercentHeight( 100.0 / (numOfFloors / 2.0) );
+				gridPane.getRowConstraints().add( rowConst );
+				
+				RadioButton button1 = new RadioButton( String.valueOf( j * 2 ) );
+				RadioButton button2 = new RadioButton( String.valueOf( j * 2 + 1 ) );
+				GridPane.setHalignment(button1, HPos.CENTER);
+				GridPane.setHalignment(button2, HPos.CENTER);
+				gridPane.addRow( j, button1, button2 );
 			}
-			else {
-				for ( int j = 0; j < numOfFloors / 2; j++ )
-				{
-					RowConstraints rowConst = new RowConstraints();
-					rowConst.setPercentHeight( 100.0 / (numOfFloors / 2.0) );
-					gridPane.getRowConstraints().add( rowConst );
-
-					RadioButton button1 = new RadioButton( String.valueOf( j * 2 ) );
-					RadioButton button2 = new RadioButton( String.valueOf( j * 2 + 1 ) );
-					GridPane.setHalignment(button1, HPos.CENTER);
-					GridPane.setHalignment(button2, HPos.CENTER);
-					gridPane.addRow( j, button1, button2 );
-				}
+			if ( numOfFloors % 2 == 1 )
+			{
 				RowConstraints rowConst = new RowConstraints();
 				rowConst.setPercentHeight( 100.0 / (numOfFloors / 2.0) );
 				gridPane.getRowConstraints().add( rowConst );
@@ -175,9 +162,7 @@ public class SimulationController
 				RadioButton button1 = new RadioButton( String.valueOf( (numOfFloors-1 )));
 				GridPane.setHalignment(button1, HPos.CENTER);
 				gridPane.addRow( (numOfFloors / 2), button1);
-
 			}
-
 
 			if ( i != numOfFloors - 1 )
 			{
