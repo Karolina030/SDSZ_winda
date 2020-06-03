@@ -9,30 +9,22 @@ public class Building
 	public static double FloorHeight = 2.8;
 	public static int numOfFloors = 8;
 
+	public PriorityQueue<ElevatorRequest> ElevatorRequests = new PriorityQueue<ElevatorRequest>();
+	public int RequestsLeft = 0;
+
 	private ArrayList<Elevator> elevators;
 	private RoundRobin roundRobin;
-	public ArrayList<ElevatorRequest> OutsideRequests = new ArrayList<ElevatorRequest>();
-	public long elapsedTime;
-	public int counter;
-
-	private int numOfPeople;
 	private int numOfResults = 0;
 	private long totalWaitingTime = 0;
 	private long totalElapsedTime;
-	public long start;
-
-	public PriorityQueue<ElevatorRequest> elevatorRequests;
 	private ArrayList<Floor> floors;
 
-	public Building( int numOfFloors, int numOfPeople, ArrayList<Elevator> elevators, ArrayList<RadioButton> buttons )
+
+	public Building( int numOfFloors, ArrayList<Elevator> elevators, ArrayList<RadioButton> buttons )
 	{
 		this.roundRobin = new RoundRobin();
 		this.elevators = elevators;
 		Building.numOfFloors = numOfFloors;
-		this.numOfPeople = numOfPeople;
-		start = System.currentTimeMillis();
-
-		elevatorRequests = new PriorityQueue<ElevatorRequest>();
 
 		floors = new ArrayList<Floor>( numOfFloors );
 		for( int i = 0; i < numOfFloors; i++ )
@@ -67,16 +59,18 @@ public class Building
 			int appearTime = rand.nextInt( period ) + time;
 			System.out.println( appearTime );
 
-			elevatorRequests.add( new ElevatorRequest( startFloor, endFloor, appearTime ) );
+			ElevatorRequests.add( new ElevatorRequest( startFloor, endFloor, appearTime ) );
 		}
+		
+		RequestsLeft += people;
 	}
 
 	// przypisuje kazdemu pasazerowi losowe zadanie i czas pojawienia
-	public void GeneratePeopleQueue( int simulationTime )
+	public void GeneratePeopleQueue( int simulationTime, int people )
 	{
 		Random rand = new Random();
 
-		for( int i = 0; i < numOfPeople; i++ )
+		for( int i = 0; i < people; i++ )
 		{
 			int startFloor = rand.nextInt( numOfFloors );
 			int endFloor;
@@ -89,29 +83,28 @@ public class Building
 			int appearTime = rand.nextInt( simulationTime );
 
 			// sortuje sie automatycznie za pomoca CompareTo
-			elevatorRequests.add( new ElevatorRequest(startFloor, endFloor, appearTime) );
+			ElevatorRequests.add( new ElevatorRequest(startFloor, endFloor, appearTime) );
 		}
+		
+		RequestsLeft += people;
 	}
 
 	public void Simulate( long elapsedTime, long totalElapsedTime )
 	{
 		this.totalElapsedTime = totalElapsedTime;
-		ElevatorRequest nextRequest = elevatorRequests.peek();
-
-		int chosenElevator = counter;
+		ElevatorRequest nextRequest = ElevatorRequests.peek();
 
 		if ( nextRequest != null
 				&& nextRequest.appearTime <= totalElapsedTime
 				&& ( totalElapsedTime - nextRequest.appearTime ) <= 20 * 1000 )
 		{
 			// pobieramy zadanie (i usuwamy)
-			nextRequest = elevatorRequests.poll();
-			elevatorRequests.remove(nextRequest);
+			nextRequest = ElevatorRequests.poll();
+			ElevatorRequests.remove(nextRequest);
 			// wybieramy numer windy
-			chosenElevator = roundRobin.chooseElevator(elevators);
+			int chosenElevator = roundRobin.chooseElevator(elevators);
 			// dodajemy to zadanie do zadan zewnetrznych windy
 			elevators.get(chosenElevator).AddOutsideRequest( nextRequest );
-			OutsideRequests.add(nextRequest);
 
 			//dodajemy to zadanie do listy na odpowiednim pietrze
 			floors.get( nextRequest.getStartFloor() ).addRequest( nextRequest );

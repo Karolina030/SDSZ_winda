@@ -33,7 +33,7 @@ public class Simulation extends Thread
 		System.out.println( "Starting simulation!" );
 		lastTime = System.currentTimeMillis();
 		
-	    while ( totalElapsedTime < simulationTime )
+	    while ( totalElapsedTime < simulationTime || building.RequestsLeft > 0 )
 	    {
 	        // get current time (in nanoseconds)
 	        currentTime = System.currentTimeMillis();

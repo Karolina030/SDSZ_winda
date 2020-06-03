@@ -1,10 +1,8 @@
 package application;
 
-import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import mainPackage.*;
-
 import java.util.ArrayList;
+import javafx.geometry.HPos;
 import javafx.stage.Stage;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -64,8 +62,8 @@ public class SimulationController
 		
 		SetBuildingPane( numOfFloors );
 		
-		Building building = new Building( numOfFloors, numOfPeople, elevators, floorButtons );
-		building.GeneratePeopleQueue( simulationTime );
+		Building building = new Building( numOfFloors, elevators, floorButtons );
+		building.GeneratePeopleQueue( simulationTime, numOfPeople );
 		building.GenerateEvent( simulationTime, groupPeriodTime, numOfPeopleInGroup, groupFloor );
 		
 		for( int i = 0; i < numOfElevators; i++ )

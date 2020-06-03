@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.GridPane;
+import sun.net.www.content.audio.x_aiff;
 
 public class Elevator
 {
@@ -206,6 +207,7 @@ public class Elevator
 				insideRequests.remove(i);
 				i--;
 				PeopleInside--;
+				building.RequestsLeft--;
 				System.out.println( "Removed one person!" );
 			}
 		}
@@ -217,12 +219,12 @@ public class Elevator
 			
 			if ( request == null )
 			{
+				outsideRequests.removeIf( e -> e.getStartFloor() == currentFloor );
 				break;
 			}
 			
 			building.AddResult( request );
 			outsideRequests.remove( request );
-			building.OutsideRequests.remove(request);
 			insideRequests.add( request );
 			PeopleInside++;
 			System.out.println( "Added one person!" );
