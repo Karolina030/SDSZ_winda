@@ -2,6 +2,8 @@ package application;
 
 import mainPackage.*;
 import java.util.ArrayList;
+import java.util.List;
+
 import javafx.geometry.HPos;
 import javafx.stage.Stage;
 import javafx.application.Platform;
@@ -43,10 +45,8 @@ public class SimulationController
 			ArrayList<Elevator> elevators,
 			int numOfFloors,
 			int numOfPeople,
-			int numOfPeopleInGroup,
-			int groupFloor,
-			int simulationTime,
-			int groupPeriodTime )
+			List<GroupData> groups,
+			int simulationTime )
 	{
 		int simulationSpeed = 1;
 
@@ -54,7 +54,14 @@ public class SimulationController
 
 		Building building = new Building( numOfFloors, elevators, floorButtons );
 		building.GeneratePeopleQueue( simulationTime, numOfPeople );
-		building.GenerateEvent( simulationTime, groupPeriodTime, numOfPeopleInGroup, groupFloor );
+		for ( GroupData group : groups )
+		{
+			building.GenerateEvent(
+					group.getPeople(),
+					group.getFloor(),
+					group.getAppear(),
+					group.getPeriod() );
+		}
 
 		for( int i = 0; i < elevators.size(); i++ )
 		{

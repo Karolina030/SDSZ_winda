@@ -2,9 +2,11 @@ package application;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javafx.stage.Stage;
 import mainPackage.Elevator;
+import mainPackage.GroupData;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
@@ -47,7 +49,7 @@ public class MainController
 			this.velocity.set( velocity );
 		}
 	}
-	
+		
 	Stage stage;
 	
 	// Elevator variables
@@ -62,7 +64,9 @@ public class MainController
 	@FXML private TextField numOfPeopleTextField;
 	@FXML private TextField numOfPeopleInGroupTextField;
 	@FXML private TextField groupFloorTextField;
+	@FXML private TextField groupAppearTimeTextField;
 	@FXML private TextField groupPeriodTextField;
+	@FXML private TableView<GroupData> groupsTable; 
 	
 	// Simulation variables
 	@FXML private TextField simulationTimeTextField;
@@ -74,6 +78,11 @@ public class MainController
 
 		elevatorsTable.getColumns().get( 0 ).setCellValueFactory( new PropertyValueFactory( "capacity" ) );
 		elevatorsTable.getColumns().get( 1 ).setCellValueFactory( new PropertyValueFactory( "velocity" ) );
+		
+		groupsTable.getColumns().get( 0 ).setCellValueFactory( new PropertyValueFactory( "people" ) );
+		groupsTable.getColumns().get( 1 ).setCellValueFactory( new PropertyValueFactory( "floor" ) );
+		groupsTable.getColumns().get( 2 ).setCellValueFactory( new PropertyValueFactory( "appear" ) );
+		groupsTable.getColumns().get( 3 ).setCellValueFactory( new PropertyValueFactory( "period" ) );
 	}
 	
 	
@@ -96,6 +105,27 @@ public class MainController
 	}
 	
 	
+	public void AddGroup()
+	{
+		groupsTable.getItems().add(
+				new GroupData(
+						Integer.parseInt( numOfPeopleInGroupTextField.getText() ),
+						Integer.parseInt( groupFloorTextField.getText() ),
+						Integer.parseInt( groupAppearTimeTextField.getText() ),
+						Integer.parseInt( groupPeriodTextField.getText() ) ) );
+	}
+	
+	
+	public void RemoveGroup()
+	{
+		GroupData group = groupsTable.getSelectionModel().getSelectedItem();
+		if ( group != null )
+		{
+			groupsTable.getItems().remove( group );
+		}
+	}
+	
+	
 	public void LoadSimulationScene()
 	{
 		System.out.println( elevatorsTable.getItems().get( 0 ).getCapacity() );
@@ -111,21 +141,17 @@ public class MainController
 			{
 				elevators.add( new Elevator( elevatorData.getVelocity(), elevatorData.getCapacity() ) );
 			}
+			List<GroupData> groups = groupsTable.getItems();
 			int numOfFloors = Integer.parseInt( numOfFloorsTextField.getText() );
 			int numOfPeople = Integer.parseInt( numOfPeopleTextField.getText() );
-			int numOfPeopleInGroup = Integer.parseInt( numOfPeopleInGroupTextField.getText() );
-			int groupFloor = Integer.parseInt( groupFloorTextField.getText() );
 			int simulationTime = Integer.parseInt( simulationTimeTextField.getText() );
-			int groupPeriodTime = Integer.parseInt( groupPeriodTextField.getText() );
 			
 			simulationController.SetupSimulation(
 					elevators,
 					numOfFloors,
 					numOfPeople,
-					numOfPeopleInGroup,
-					groupFloor,
-					simulationTime,
-					groupPeriodTime );
+					groups,
+					simulationTime );
 			
 			stage.getScene().setRoot( simulationRoot );
 		} catch ( IOException e )
