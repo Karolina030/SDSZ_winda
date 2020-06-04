@@ -128,7 +128,6 @@ public class MainController
 	
 	public void LoadSimulationScene()
 	{
-		System.out.println( elevatorsTable.getItems().get( 0 ).getCapacity() );
 		try
 		{
 			FXMLLoader simulationLoader = new FXMLLoader( this.getClass().getResource( "Simulation.fxml" ) );

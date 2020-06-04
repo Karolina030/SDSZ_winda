@@ -21,6 +21,7 @@ public class SimulationController
 	Stage stage;
 
 	@FXML private Button startButton;
+	@FXML private Button stopButton;
 	@FXML private GridPane buildingPane;
 	@FXML private Label height1Label;
 	@FXML private Label height2Label;
@@ -52,7 +53,7 @@ public class SimulationController
 
 		SetBuildingPane( numOfFloors );
 
-		Building building = new Building( numOfFloors, elevators, floorButtons );
+		Building building = new Building( numOfFloors, elevators, floorButtons, this );
 		building.GeneratePeopleQueue( simulationTime, numOfPeople );
 		for ( GroupData group : groups )
 		{
@@ -86,15 +87,24 @@ public class SimulationController
 			elevators.get(i).SetBuilding( building );
 		}
 
-		simulation = new Simulation( building, simulationTime, simulationSpeed, this );
+		simulation = new Simulation( building, simulationTime, simulationSpeed );
 	}
 
 
 	public void StartSimulation()
 	{
 		startButton.setDisable( true );
+		stopButton.setDisable( false );
 
 		simulation.start();
+	}
+	
+	
+	public void StopSimulation()
+	{
+		stopButton.setDisable( true );
+
+		simulation.stop();
 	}
 
 

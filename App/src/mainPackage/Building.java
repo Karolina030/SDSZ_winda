@@ -1,6 +1,8 @@
 package mainPackage;
 
 import java.util.*;
+
+import application.SimulationController;
 import javafx.scene.control.RadioButton;
 
 public class Building
@@ -18,12 +20,14 @@ public class Building
 	private long totalWaitingTime = 0;
 	private long totalElapsedTime;
 	private ArrayList<Floor> floors;
+	private SimulationController simulationController;
 
 
-	public Building( int numOfFloors, ArrayList<Elevator> elevators, ArrayList<RadioButton> buttons )
+	public Building( int numOfFloors, ArrayList<Elevator> elevators, ArrayList<RadioButton> buttons, SimulationController simulationController )
 	{
 		this.roundRobin = new RoundRobin();
 		this.elevators = elevators;
+		this.simulationController = simulationController;
 		Building.numOfFloors = numOfFloors;
 
 		floors = new ArrayList<Floor>( numOfFloors );
@@ -122,6 +126,7 @@ public class Building
 	{
 		numOfResults++;
 		totalWaitingTime += totalElapsedTime - request.appearTime;
+		simulationController.ShowResults( GetResults() );
 	}
 
 	public Results GetResults()

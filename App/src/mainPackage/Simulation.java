@@ -15,15 +15,13 @@ public class Simulation extends Thread
 	private long elapsedTime;
 	private long totalElapsedTime;
 	private long sleepTime;
-	private SimulationController simulationController;
 	
 	
-	public Simulation( Building building, long simulationTimeInSeconds, int simulationSpeed, SimulationController simulationController )
+	public Simulation( Building building, long simulationTimeInSeconds, int simulationSpeed )
 	{
 		this.building = building;
 		this.simulationTime = (int) simulationTimeInSeconds * 1000 * simulationSpeed;
 		this.simulationSpeed = simulationSpeed;
-		this.simulationController = simulationController;
 	}
 	
 	
@@ -68,7 +66,6 @@ public class Simulation extends Thread
 	    
 	    System.out.println("Simulation ended!");
 	    
-	    simulationController.ShowResults( building.GetResults() );
 	}
 	
 	
