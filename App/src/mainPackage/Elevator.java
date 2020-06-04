@@ -30,11 +30,21 @@ public class Elevator
 	private ArrayList<GridPane> panes;
 
 
-	public Elevator( double velocity, int capacity, Label heightLabel, ArrayList<GridPane> panes )
+	public Elevator( double velocity, int capacity )
 	{
 		this.velocity = velocity;
 		Capacity = capacity;
+	}
+	
+	
+	public void AddHeightLabel( Label heightLabel )
+	{
 		this.heightLabel = heightLabel;
+	}
+	
+	
+	public void AddPanes( ArrayList<GridPane> panes )
+	{
 		this.panes = panes;
 	}
 	

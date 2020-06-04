@@ -40,9 +40,7 @@ public class SimulationController
 
 
 	public void SetupSimulation(
-			int numOfElevators,
-			int elevatorCapacity,
-			float elevatorVelocity,
+			ArrayList<Elevator> elevators,
 			int numOfFloors,
 			int numOfPeople,
 			int numOfPeopleInGroup,
@@ -52,22 +50,32 @@ public class SimulationController
 	{
 		int simulationSpeed = 1;
 
-		ArrayList<Elevator> elevators = new ArrayList<Elevator>();
-
-		for( int i = 0; i < numOfElevators; i++ )
-		{
-			Elevator elevator = CreateElevator( i, numOfFloors, elevatorVelocity, elevatorCapacity );
-			elevators.add( elevator );
-		}
-
 		SetBuildingPane( numOfFloors );
 
 		Building building = new Building( numOfFloors, elevators, floorButtons );
 		building.GeneratePeopleQueue( simulationTime, numOfPeople );
 		building.GenerateEvent( simulationTime, groupPeriodTime, numOfPeopleInGroup, groupFloor );
 
-		for( int i = 0; i < numOfElevators; i++ )
+		for( int i = 0; i < elevators.size(); i++ )
 		{
+			ArrayList<GridPane> elevatorPanes = null;
+			Label heightLabel = null;
+
+			if ( i < 2 )
+			{
+				elevatorPanes = CreateElevatorPanes( numOfFloors, i );
+				if ( i == 0 )
+				{
+					heightLabel = height1Label;
+				}
+				else
+				{
+					heightLabel = height2Label;
+				}
+			}
+
+			elevators.get( i ).AddHeightLabel( heightLabel );
+			elevators.get( i ).AddPanes( elevatorPanes );
 			elevators.get(i).SetBuilding( building );
 		}
 
@@ -94,28 +102,6 @@ public class SimulationController
 				avgWaitingTimeLabel.setText( String.valueOf( results.AvgWaitingTime ) );
 			}
 		});
-	}
-
-
-	private Elevator CreateElevator( int elevatorNumber, int numOfFloors, float velocity, int capacity )
-	{
-		ArrayList<GridPane> elevatorPanes = null;
-		Label heightLabel = null;
-
-		if ( elevatorNumber < 2 )
-		{
-			elevatorPanes = CreateElevatorPanes( numOfFloors, elevatorNumber );
-			if ( elevatorNumber == 0 )
-			{
-				heightLabel = height1Label;
-			}
-			else
-			{
-				heightLabel = height2Label;
-			}
-		}
-
-		return new Elevator( velocity, capacity, heightLabel, elevatorPanes );
 	}
 
 
