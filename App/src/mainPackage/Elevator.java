@@ -26,6 +26,8 @@ public class Elevator
 	private final DoubleProperty currentHeight = new SimpleDoubleProperty( 0.0 );
 	private int floorToGo = 0;
 	private boolean isMoving = false;
+	private boolean isHandlingDoor = false;
+	private int handlingDoorTime = 0;
 	private Label heightLabel;
 	private ArrayList<GridPane> panes;
 
@@ -86,22 +88,37 @@ public class Elevator
 
 	public void Simulate( long elapsedTime )
 	{
-		// Jezeli sie nie poruszamy to wybieramy poziom na ktory pojedziemy
-		if ( !isMoving )
+		if ( isHandlingDoor )
 		{
-			floorToGo = ChooseLevelToGo();
-			if ( floorToGo >= 0 )
+			if ( handlingDoorTime < 5000 )
 			{
-				AdjustDirection();
-				isMoving = true;
-				System.out.println("----------------------------------");
-				System.out.println("Moving to " + floorToGo);
+				handlingDoorTime += elapsedTime;
+			}
+			else
+			{
+				handlingDoorTime = 0;
+				isHandlingDoor = false;
 			}
 		}
-		// Poruszamy sie
 		else
 		{
-			Move( elapsedTime );
+			// Jezeli sie nie poruszamy to wybieramy poziom na ktory pojedziemy
+			if ( !isMoving )
+			{
+				floorToGo = ChooseLevelToGo();
+				if ( floorToGo >= 0 )
+				{
+					AdjustDirection();
+					isMoving = true;
+					System.out.println("----------------------------------");
+					System.out.println("Moving to " + floorToGo);
+				}
+			}
+			// Poruszamy sie
+			else
+			{
+				Move( elapsedTime );
+			}			
 		}
 	}
 	
@@ -204,6 +221,7 @@ public class Elevator
 	private void FloorAchieved()
 	{
 		isMoving = false;
+		isHandlingDoor = true;
 		
 		System.out.println("Floor " + currentFloor + " achieved!");
 		
