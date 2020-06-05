@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -31,6 +32,8 @@ public class SimulationController
 	@FXML private Pane resultsPane;
 	@FXML private Label numOfPeopleLabel;
 	@FXML private Label avgWaitingTimeLabel;
+	
+	@FXML private TextField simulationSpeedTextField;
 
 
 	private ArrayList<RadioButton> floorButtons = new ArrayList<RadioButton>();
@@ -49,8 +52,6 @@ public class SimulationController
 			List<GroupData> groups,
 			int simulationTime )
 	{
-		int simulationSpeed = 1;
-
 		SetBuildingPane( numOfFloors );
 
 		Building building = new Building( numOfFloors, elevators, floorButtons, this );
@@ -87,7 +88,7 @@ public class SimulationController
 			elevators.get(i).SetBuilding( building );
 		}
 
-		simulation = new Simulation( building, simulationTime, simulationSpeed );
+		simulation = new Simulation( building, simulationTime );
 	}
 
 
@@ -105,6 +106,12 @@ public class SimulationController
 		stopButton.setDisable( true );
 
 		simulation.stop();
+	}
+	
+	
+	public void ChangeSimulationSpeed()
+	{
+		simulation.SimulationSpeed = Float.parseFloat( simulationSpeedTextField.getText() );
 	}
 
 

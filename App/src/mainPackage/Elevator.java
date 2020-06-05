@@ -223,6 +223,8 @@ public class Elevator
 		isMoving = false;
 		isHandlingDoor = true;
 		
+		setCurrentHeight( currentFloor * Building.FloorHeight );
+		
 		System.out.println("Floor " + currentFloor + " achieved!");
 		
 		// wysiadajacy

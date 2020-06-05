@@ -81,5 +81,7 @@
          </children>
       </Pane>
       <Button fx:id="stopButton" disable="true" layoutX="750.0" layoutY="808.0" mnemonicParsing="false" onAction="#StopSimulation" text="Stop simulation" />
+      <Label layoutX="755.0" layoutY="628.0" text="Simulation speed" />
+      <TextField fx:id="simulationSpeedTextField" layoutX="755.0" layoutY="658.0" onAction="#ChangeSimulationSpeed" prefHeight="25.0" prefWidth="92.0" />
    </children>
 </AnchorPane>

@@ -1,12 +1,11 @@
 package mainPackage;
 
-import application.SimulationController;
-
 public class Simulation extends Thread
 {
+	public float SimulationSpeed = 1;
+
 	private Building building;
 	private int simulationTime;
-	private int simulationSpeed;
 
 	private int updatesPerSecond = 5;
 	private int targetTime = 1000 / updatesPerSecond;
@@ -17,11 +16,10 @@ public class Simulation extends Thread
 	private long sleepTime;
 	
 	
-	public Simulation( Building building, long simulationTimeInSeconds, int simulationSpeed )
+	public Simulation( Building building, long simulationTimeInSeconds )
 	{
 		this.building = building;
-		this.simulationTime = (int) simulationTimeInSeconds * 1000 * simulationSpeed;
-		this.simulationSpeed = simulationSpeed;
+		this.simulationTime = (int) simulationTimeInSeconds * 1000;
 	}
 	
 	
@@ -37,7 +35,7 @@ public class Simulation extends Thread
 	        currentTime = System.currentTimeMillis();
 
 	        // get time elapsed since last update
-	        elapsedTime = (currentTime - lastTime) * simulationSpeed;
+	        elapsedTime = (long) ( (currentTime - lastTime) * SimulationSpeed );
 	        totalElapsedTime += elapsedTime;
 	        lastTime = currentTime;
 
