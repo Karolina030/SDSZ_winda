@@ -55,8 +55,6 @@
     -fx-background-color: derive(-fx-focus-color,30%);
 }
 
-
-
 .label {
 
     -fx-font-size: 13px;
@@ -66,7 +64,6 @@
     -fx-font-family: "Segoe UI Semibold";
     -fx-text-fill: white;
     -fx-opacity: 1;
-
 
 }
 
@@ -166,9 +163,6 @@
     -fx-border-color: #d3d7db;
 }
 
-
-
-
 .table-view{
     -fx-background-color: transparent;
 }
@@ -214,3 +208,18 @@
     -fx-background-insets: 0;
     -fx-background-radius: 1;
 }
+
+.choice-box {
+    -fx-background-color: black;
+    -fx-mark-color: #f3f1ee;
+}
+
+   .choice-box > .label { -fx-text-fill: white; }
+
+   .choice-box .context-menu { -fx-background-color: black; }
+
+   .choice-box .menu-item:focused { -fx-background-color: #9ca0a0; }
+
+   .choice-box .menu-item > .label { -fx-text-fill: white; }
+
+   .choice-box .menu-item:focused > .label { -fx-text-fill: black; }
