@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.GridPane;
 
+
 public class Elevator
 {
 	// max num of people
@@ -30,12 +31,14 @@ public class Elevator
 	private int handlingDoorTime = 0;
 	private Label heightLabel;
 	private ArrayList<GridPane> panes;
+	private Gathering gathering;
 
 
-	public Elevator( double velocity, int capacity )
+	public Elevator( double velocity, int capacity, Gathering gatheringType )
 	{
 		this.velocity = velocity;
 		Capacity = capacity;
+		this.gathering = gatheringType;
 	}
 	
 	
@@ -139,7 +142,15 @@ public class Elevator
 			// wtedy zostanie zwrocony poziom nizej
 			if ( direction == Direction.up)
 			{
-				return GetClosestRequestUp();
+				if ( gathering == Gathering.Down )
+				{
+					ElevatorRequest insideRequest = GetClosestInsideRequestUp();
+					return insideRequest == null ? GetClosestRequestDown() : insideRequest.getEndFloor();
+				}
+				else
+				{
+					return GetClosestRequestUp();
+				}
 			}
 			// winda jechala w dol wiec staramy sie jechac w dol
 			else
@@ -154,16 +165,23 @@ public class Elevator
 				return currentFloor;
 			}
 			
-			// sprawdzamy czy najstarsze zadanie jest nizej
-			if ( outsideRequests.get( 0 ).getStartFloor() < currentFloor )
+			if ( gathering == Gathering.Down )
 			{
-				// zwracamy najblizsze zadanie w dol
-				return GetClosestOutsideRequestDown().getStartFloor();
+				return GetHighestOutsideRequest();
 			}
 			else
 			{
-				// zwracamy najblizsze zadanie w gore
-				return GetClosestOutsideRequestUp().getStartFloor();
+				// sprawdzamy czy najstarsze zadanie jest nizej
+				if ( outsideRequests.get( 0 ).getStartFloor() < currentFloor )
+				{
+					// zwracamy najblizsze zadanie w dol
+					return GetClosestOutsideRequestDown().getStartFloor();
+				}
+				else
+				{
+					// zwracamy najblizsze zadanie w gore
+					return GetClosestOutsideRequestUp().getStartFloor();
+				}
 			}
 		}
 		else
@@ -175,11 +193,11 @@ public class Elevator
 
 	private void AdjustDirection()
 	{
-		if ( floorToGo < currentFloor || currentFloor==7)
+		if ( floorToGo < currentFloor || currentFloor == Building.numOfFloors - 1 )
 		{
 			direction = Direction.down;
 		}
-		else if ( floorToGo > currentFloor || currentFloor==0)
+		else if ( floorToGo > currentFloor || currentFloor == 0 )
 		{
 			direction = Direction.up;
 		}
@@ -440,6 +458,23 @@ public class Elevator
 				{
 					result = request;
 				}
+			}
+		}
+		
+		return result;
+	}
+	
+	
+	private int GetHighestOutsideRequest()
+	{
+		int result = 0;
+		
+		for( int i = 0; i < outsideRequests.size(); i++ )
+		{
+			int request = outsideRequests.get( i ).getStartFloor();
+			if ( request > result )
+			{
+				result = request;
 			}
 		}
 		

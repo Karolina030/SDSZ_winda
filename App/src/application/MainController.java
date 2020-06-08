@@ -6,11 +6,13 @@ import java.util.List;
 
 import javafx.stage.Stage;
 import mainPackage.Elevator;
+import mainPackage.Gathering;
 import mainPackage.GroupData;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -70,6 +72,7 @@ public class MainController
 	
 	// Simulation variables
 	@FXML private TextField simulationTimeTextField;
+	@FXML private ChoiceBox<Gathering> gatheringTypeChoiceBox;
 
 	
 	public void SetStage(Stage s)
@@ -83,6 +86,9 @@ public class MainController
 		groupsTable.getColumns().get( 1 ).setCellValueFactory( new PropertyValueFactory( "floor" ) );
 		groupsTable.getColumns().get( 2 ).setCellValueFactory( new PropertyValueFactory( "appear" ) );
 		groupsTable.getColumns().get( 3 ).setCellValueFactory( new PropertyValueFactory( "period" ) );
+		
+		gatheringTypeChoiceBox.getItems().add( Gathering.Down );
+		gatheringTypeChoiceBox.getItems().add( Gathering.UpDown );
 	}
 	
 	
@@ -138,7 +144,11 @@ public class MainController
 			ArrayList<Elevator> elevators = new ArrayList<Elevator>();
 			for ( ElevatorData elevatorData : elevatorsTable.getItems() )
 			{
-				elevators.add( new Elevator( elevatorData.getVelocity(), elevatorData.getCapacity() ) );
+				Elevator elevator = new Elevator(
+						elevatorData.getVelocity(),
+						elevatorData.getCapacity(),
+						gatheringTypeChoiceBox.getValue() ); 
+				elevators.add( elevator );
 			}
 			List<GroupData> groups = groupsTable.getItems();
 			int numOfFloors = Integer.parseInt( numOfFloorsTextField.getText() );

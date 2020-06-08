@@ -14,7 +14,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
    <children>
-      <Button layoutX="290.0" layoutY="811.0" mnemonicParsing="false" onAction="#LoadSimulationScene" text="Load simulation" />
+      <Button layoutX="735.0" layoutY="811.0" mnemonicParsing="false" onAction="#LoadSimulationScene" text="Load simulation" />
       <Pane layoutX="14.0" layoutY="14.0" prefHeight="816.0" prefWidth="209.0">
          <children>
             <Label fx:id="Elevators" layoutX="14.0" layoutY="14.0" text="Elevators">
@@ -86,15 +86,17 @@
             </TableView>
          </children>
       </Pane>
-      <Pane layoutX="680.0" layoutY="14.0" prefHeight="132.0" prefWidth="200.0">
+      <Pane layoutX="680.0" layoutY="14.0" prefHeight="365.0" prefWidth="172.0">
          <children>
             <Label fx:id="Simulation" layoutX="14.0" layoutY="14.0" text="Simulation">
                <font>
                   <Font name="System Bold" size="20.0" />
                </font>
             </Label>
-            <TextField fx:id="simulationTimeTextField" layoutX="139.0" layoutY="86.0" prefHeight="25.0" prefWidth="47.0" />
+            <TextField fx:id="simulationTimeTextField" layoutX="116.0" layoutY="86.0" prefHeight="25.0" prefWidth="47.0" />
             <Label layoutX="23.0" layoutY="90.0" text="Time" />
+            <ChoiceBox fx:id="gatheringTypeChoiceBox" layoutX="11.0" layoutY="170.0" prefWidth="150.0" />
+            <Label layoutX="9.0" layoutY="141.0" text="Elevator gathering type" />
          </children>
       </Pane>
    </children>
